@@ -1,0 +1,376 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Bebas+Neue&family=Comfortaa:wght@300..700&family=League+Spartan:wght@100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    font-family: poppins;
+}
+
+.poppins-bold {
+    font-weight: 700;
+}
+
+.poppins-semibold {
+    font-weight: 600;
+}
+
+.poppins-medium {
+    font-weight: 500;
+}
+
+.custom-input {
+    background-color: #FFFEEC;
+}
+
+.bg {
+    background-color: #FFFEEC;
+    background-image: url('./assets/img/bg.png');
+    background-size: 100%;
+}
+
+.btn-hijau {
+    background-color: #058055;
+    padding: 10px;
+    padding-inline: 20px;
+    border-radius: 10px;
+    border: 0px;
+    text-decoration: none;
+    color: #FFFEEC;
+    font-weight: 700;
+    text-align: center;
+}
+
+.btn-hitam {
+    background-color: #1E1E1E;
+    padding: 10px;
+    padding-inline: 20px;
+    border: 0px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #FFFEEC;
+    font-weight: 700;
+    text-align: center;
+}
+
+.btn-merah {
+    background-color: #FF0000;
+    padding: 10px;
+    padding-inline: 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 0px;
+    color: #FFFEEC;
+    font-weight: 700;
+    text-align: center;
+}
+
+.bg-merah {
+    background-color: #FF0000;
+    color: #FFFEEC;
+}
+
+.bg-hitam {
+    background-color: #1E1E1E;
+    color: #FFFEEC;
+}
+
+.btn-merah:hover {
+    background-color: rgb(206, 0, 0);
+}
+
+.btn-hijau:hover {
+    background-color: #088d5e;
+}
+
+.btn-hitam:hover {
+    background-color: #3e3434;
+}
+
+.text-hitam {
+    color: #1E1E1E;
+}
+
+.text-putih {
+    color: #FFFEEC;
+}
+
+.card-bg {
+    background-color: #058055;
+    color: #FFFEEC;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.shadow {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.container-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 200px;
+}
+
+.bg-putih {
+    background-color: #FFFEEC;
+}
+
+.bg-hijau {
+    background-color: #058055 !important;
+    color: #FFFEEC;
+}
+
+.no-kandidat {
+    font-weight: 400;
+    font-size: 200px;
+}
+
+.img-fit {
+    object-fit: cover;
+    width: 100%;
+    aspect-ratio: 1/1;
+}
+
+.card-text {
+    font-size: 15px;
+}
+
+.hasil-pemilu-text {
+    text-align: center;
+}
+
+.grafik-batang {
+  width: 40px;
+  height: 0; 
+  align-self: center ;
+  
+}
+
+.grafik-batang1 {
+  --target-height: 250px;
+  height: var(--target-height);
+  background-color: #86A83D;
+  animation-delay: 0s;
+}
+
+.grafik-batang2 {
+  --target-height: 300px;
+  height: var(--target-height);
+  background-color: #007F5F;
+  animation-delay: 0.2s;
+}
+
+.grafik-batang3 {
+  --target-height: 120px;
+  height: var(--target-height);
+  background-color: #FFD93D;
+  animation-delay: 0.4s;
+}
+
+.grafik-batang4 {
+  --target-height: 200px;
+  height: var(--target-height);
+  background-color: #FF914D;
+  animation-delay: 0.6s;
+}
+
+@keyframes grow-bar {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--target-height);
+  }
+}
+
+.grafik-batang.animate {
+  animation: grow-bar 1.2s ease-out forwards;
+}
+@media (max-width: 756px) {
+    .bg-chart{
+        height: 450px !important;
+    }
+}
+
+
+.box-satu {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    gap: 1rem;
+
+}
+
+.pie-chart {
+    height: 300px;
+    width: 300px;
+    border-radius: 50%;
+    background-image:
+        radial-gradient(#FFFEEC 0 50%,
+            transparent 50% 70%,
+            #FFFEEC 70%),
+        conic-gradient(#86A83D 40%,
+            #007F5F 0 65%,
+            #FFD93D 0 85%,
+            #FF914D 0);
+}
+
+.table-warga {
+    border-radius: 12px;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
+    font-size: 12px;
+}
+
+.radius-atas-kiri {
+    border-radius: 12px 0 0 0;
+}
+
+.radius-atas-kanan {
+    border-radius: 0 12px 0 0;
+}
+
+.text-kecil {
+    font-size: 13px;
+}
+
+.search-input:focus {
+    outline: none;
+}
+
+.form-control-hitam {
+    background-color: #1E1E1E;
+    color: #FFFEEC;
+}
+
+.form-control-hitam:focus {
+    background-color: #1E1E1E;
+    color: #FFFEEC;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.form-control-abu {
+    background-color: #D9D9D9;
+    color: #1E1E1E;
+}
+
+.form-control-abu:focus {
+    background-color: #D9D9D9;
+    color: #1E1E1E;
+    border-color: #1E1E1E;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.0);
+}
+
+.form-control-abu::file-selector-button {
+    background-color: #d9d9d9;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-right: 1px solid #bfbfbf;
+    transition: 0.3s;
+}
+
+.form-control-abu::file-selector-button:hover {
+    background-color: #c9c9c9;
+    cursor: pointer;
+}
+
+.form-control-search {
+    background-color: #FFFEEC;
+    padding: 10px;
+    padding-inline: 15px;
+    color: #1E1E1E;
+    border: 1px solid rgba(30, 30, 30, 0.3);
+}
+
+.form-control-search:focus {
+    background-color: #FFFEEC;
+    color: #1E1E1E;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.0);
+    border: 1px solid rgba(30, 30, 30, 0.3);
+}
+
+.search-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.search-wrapper i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #999;
+}
+
+.search-wrapper .form-control {
+    padding-left: 40px;
+    /* supaya teks tidak menimpa ikon */
+}
+
+th {
+    text-align: center;
+}
+
+td,
+th {
+    font-size: 13px;
+    padding: 10px;
+}
+
+table {
+    border-collapse: separate;
+    /* penting! biar radius berfungsi */
+    border-spacing: 0;
+    /* hapus jarak antar sel */
+    overflow: hidden;
+    /* agar isi tidak keluar dari radius */
+}
+
+tr:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    transition: ease-in 0.1s;
+}
+
+@media (min-width: 756px) {
+    .warp-login {
+        gap: 10rem;
+        margin-top: 4rem;
+    }
+
+
+}
+
+@media (max-width: 756px) {
+    .button-nav {
+        background-color: #007F5F;
+    }
+
+    .text-sedang {
+        font-size: small;
+    }
+
+    .pie-chart {
+        height: 200px;
+        width: 200px;
+    }
+
+}
+
+.warp-login {
+    gap: 3rem;
+
+
+}
+.text-danger {
+  font-size: 0.9em;
+  margin-left: 2px;
+}
+
+.input-underline {
+  border: none;
+  border-bottom: 3px solid #007F5F;
+  border-radius: 0;
+  box-shadow: none;
+}
+.input-underline:focus {
+  border-bottom-color: #0056b3;
+  outline: none;
+  box-shadow: none;
+}
