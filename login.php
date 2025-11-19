@@ -7,7 +7,7 @@ if (!empty($error)) {
   $error = urldecode($error);
 }
 
-
+//test
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   $nik = trim($_POST['nik'] ?? '');
