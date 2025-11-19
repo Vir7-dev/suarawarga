@@ -7,7 +7,6 @@ if (!empty($error)) {
   $error = urldecode($error);
 }
 
-// Hanya proses jika ini adalah POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   $nik = trim($_POST['nik'] ?? '');
