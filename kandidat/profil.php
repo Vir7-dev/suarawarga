@@ -1,3 +1,23 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
+    exit();
+}
+
+if ($_SESSION['user_role'] !== 'panitia') {
+    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
+    exit();
+}
+require_once '../koneksi.php';
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -22,7 +42,7 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                       <ul class="navbar-nav rounded-3 text-end my-4 p-4 gap-4 button-nav ms-auto mb-2 gap-2">
+                    <ul class="navbar-nav rounded-3 text-end my-4 p-4 gap-4 button-nav ms-auto mb-2 gap-2">
                         <li class="nav-item">
                             <a class="btn-hitam" href="index.php">Beranda</a>
                         </li>

@@ -1,3 +1,23 @@
+<?php
+
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
+    exit();
+}
+
+if ($_SESSION['user_role'] !== 'warga') {
+    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
+    exit();
+}
+require_once '../koneksi.php';
+
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -539,7 +559,7 @@
                   <div class="d-grid">
                     <button
                       type="button"
-                      onclick="window.location.href='../login.php'"
+                      onclick="window.location.href='../logout.php'"
                       class="btn-hitam border-0"
                     >
                       YA

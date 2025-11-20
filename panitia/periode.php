@@ -353,7 +353,7 @@ try {
                                 <h5 class="text-center mt-0 mb-3">apakah anda ingin keluar dari website suara warga?</h5>
                             </div>
                             <div class="d-grid">
-                                <a href="../login.php" class="btn-hitam border-0 text-center text-decoration-none">YA</a>
+                                <a href="../logout.php" class="btn-hitam border-0 text-center text-decoration-none">YA</a>
                             </div>
                         </div>
                     </div>

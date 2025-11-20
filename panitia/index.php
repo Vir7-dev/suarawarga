@@ -1,3 +1,18 @@
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
+    exit();
+}
+
+if ($_SESSION['user_role'] !== 'panitia') {
+    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
+    exit();
+}
+require_once '../koneksi.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -349,7 +364,7 @@
                                 <h5 class="text-center mt-0 mb-3">Apakah Anda ingin keluar dari website <b>Suara
                                         Warga</b>?</h5>
                                 <div class="d-grid">
-                                    <button type="button" onclick="window.location.href='../login.php'" class="btn-hitam border-0">YA</button>
+                                    <button type="button" onclick="window.location.href='../logout.php'" class="btn-hitam border-0">YA</button>
                                 </div>
                             </div>
                         </div>
