@@ -94,7 +94,6 @@ require_once '../koneksi.php';
                         </tr>
                         <tbody id="t-body">
                             <?php
-                            include "../koneksi.php";
 
                             // --- Konfigurasi Pagination ---
                             $limit = 10; // jumlah baris per halaman
