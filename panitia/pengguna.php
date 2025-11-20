@@ -219,14 +219,21 @@ require_once '../koneksi.php';
                                 <input type="text" class="form-control input-underline" id="input-tempat-lahir">
                             </div>
                             <div class="mb-3">
-                                <label for="" class="col-form-label">Tanggal Lahir <span
-                                        class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-underline" id="input-tanggal-lahir">
+                                <label class="col-form-label">Tanggal Lahir <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control input-underline" id="input-tanggal-lahir">
                             </div>
                             <div class="mb-3">
-                                <label for="" class="col-form-label">Agama <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-underline" id="input-agama">
-                            </div>
+                                <label class="col-form-label">Agama <span class="text-danger">*</span></label>
+                                <select class="form-control input-underline" id="input-agama">
+                                <option value="" hidden>Pilih Agama</option>
+                                <option value="Islam">Islam</option>
+                                <option value="Kristen Protestan">Kristen Protestan</option>
+                                <option value="Katolik">Katolik</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Buddha">Buddha</option>
+                                <option value="Konghucu">Konghucu</option>
+                                </select>
+                            </div> 
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Alamat <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control input-underline" id="input-alamat">
