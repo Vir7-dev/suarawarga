@@ -124,27 +124,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <h4 class="poppins-semibold  text-putih mb-3">Visi & Misi</h4>
 
                 <div class="mb-4 text-putih ">
-                    <h5 class="text-uppercase poppins-semibold text-putih">Visi</h5>
-                    <p class="text-text-putih ">
-                        <?= nl2br(htmlspecialchars($visi)) ?>
+    <h5 class="text-uppercase poppins-semibold text-putih">Visi</h5>
+    <p class="text-text-putih ">
+        <?php echo nl2br(htmlspecialchars($visi)); ?>
+    </p>
+</div>
 
-                    </p>
-                </div>
+<div>
+    <h5 class="text-uppercase poppins-semibold text-putih">Misi</h5>
+    <ol>
+        <?php
+        if (!empty($misi)) {
+            $misi_list = explode("\n", $misi);
 
-                <div>
-                    <h5 class="text-uppercase poppins-semibold text-putih">Misi</h5>
-                   <ol>
-                    <?php
-                    $misi_list = explode("\n", $misi);  
-
-                    foreach ($misi_list as $baris) {
-                        $baris = trim($baris);
-                        if ($baris !== "") {
-                            echo "<li>" . htmlspecialchars($baris) . "</li>";
-                        }
-                    }
-                    ?>
-                </ol>
+            foreach ($misi_list as $baris) {
+                $baris = trim($baris);
+                if ($baris !== "") {
+                    echo "<li>" . htmlspecialchars($baris) . "</li>";
+                }
+            }
+        }
+        ?>
+    </ol>
                 </div>
             </div>
 
@@ -183,7 +184,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <div class="modal-body">
                         <form action="" method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label class="col-form-label">Foto</label>
+                                <label class="col-form-label">Foto <span class="text-danger"></span></label>
                                 <input type="file" name="foto_profil" class="form-control">
                             </div>
 
