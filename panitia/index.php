@@ -283,8 +283,7 @@ $total_suara = array_column($data, 'total_suara');
                                  scales: {
                                     yAxes: [{
                                         ticks: {
-                                            beginAtZero: true      // <-- mulai dari 0
-                                            // min: 0              // <-- kalau ingin dipaksa mulai dari 0
+                                            beginAtZero: true 
                                         }
                                     }]
                                 }
