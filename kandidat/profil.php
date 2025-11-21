@@ -63,24 +63,28 @@
                 <h4 class="poppins-semibold  text-putih mb-3">Visi & Misi</h4>
 
                 <div class="mb-4 text-putih ">
-                    <h5 class="text-uppercase poppins-semibold text-putih">Visi</h5>
-                    <p class="text-text-putih ">
-                        Menjadi sosok pemimpin yang inspiratif, berintegritas, dan mampu menciptakan lingkungan yang
-                        produktif,
-                        inovatif, serta harmonis bagi seluruh anggota komunitas.
-                    </p>
-                </div>
+    <h5 class="text-uppercase poppins-semibold text-putih">Visi</h5>
+    <p class="text-text-putih ">
+        <?php echo nl2br(htmlspecialchars($visi)); ?>
+    </p>
+</div>
 
-                <div>
-                    <h5 class="text-uppercase poppins-semibold text-putih">Misi</h5>
-                    <ol class="">
-                        <li>Meningkatkan partisipasi aktif seluruh anggota dalam setiap kegiatan organisasi.</li>
-                        <li>Mendorong kreativitas dan inovasi melalui program-program berbasis ide baru dan teknologi.
-                        </li>
-                        <li>Mewujudkan transparansi serta komunikasi yang terbuka antara anggota dan pengurus.</li>
-                        <li>Mengembangkan kepemimpinan yang adil, disiplin, dan berorientasi pada kerja sama tim.</li>
-                        <li>Menciptakan lingkungan yang inklusif, suportif, dan saling menghargai satu sama lain.</li>
-                    </ol>
+<div>
+    <h5 class="text-uppercase poppins-semibold text-putih">Misi</h5>
+    <ol>
+        <?php
+        if (!empty($misi)) {
+            $misi_list = explode("\n", $misi);
+
+            foreach ($misi_list as $baris) {
+                $baris = trim($baris);
+                if ($baris !== "") {
+                    echo "<li>" . htmlspecialchars($baris) . "</li>";
+                }
+            }
+        }
+        ?>
+    </ol>
                 </div>
             </div>
 
@@ -118,9 +122,9 @@
                     <div class="modal-body">
                         <form>
                             <div class="mb-3">
-                                <label for="" class="col-form-label">Foto <span
-                                        class="text-danger">*</span></label>
-                                <input type="file" class="form-control " id="inputGroupFile02">
+                                <label class="col-form-label">Foto <span class="text-danger"></span></label>
+                                <input type="file" name="foto_profil" class="form-control">
+                                
                             </div>
                             <div class="mb-3">
                                 <label for="message-text" class="col-form-label">Visi : <span
