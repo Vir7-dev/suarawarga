@@ -276,7 +276,7 @@ $total_suara = array_column($data, 'total_suara');
                                 legend: {
                                     display: false
                                 },
-                                title: {
+                                title: { 
                                     display: true,
                                     text: "TOTAL SUARA"
                                 },
