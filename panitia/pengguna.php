@@ -95,23 +95,18 @@ require_once '../koneksi.php';
                         <tbody id="t-body">
                             <?php
 
-                            // --- Konfigurasi Pagination ---
-                            $limit = 10; // jumlah baris per halaman
+                            $limit = 10; 
                             $page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                             $page  = $page < 1 ? 1 : $page;
 
-                            // Hitung total data
                             $countStmt = $pdo->prepare("SELECT COUNT(*) FROM pengguna");
                             $countStmt->execute();
                             $totalData = $countStmt->fetchColumn();
 
-                            // total halaman
                             $totalPage = ceil($totalData / $limit);
 
-                            // offset
                             $offset = ($page - 1) * $limit;
 
-                            // Ambil data sesuai halaman
                             $stmt = $pdo->prepare("SELECT * FROM pengguna ORDER BY nama ASC LIMIT :limit OFFSET :offset");
                             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
                             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -146,14 +141,12 @@ require_once '../koneksi.php';
 
                 <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
 
-                    <!-- Tombol Prev -->
                     <?php if ($page > 1): ?>
                         <a href="?page=<?= $page - 1 ?>" class="btn btn-outline-success">Prev</a>
                     <?php else: ?>
                         <button class="btn btn-outline-secondary" disabled>Prev</button>
                     <?php endif; ?>
 
-                    <!-- Nomor Halaman -->
                     <?php for ($i = 1; $i <= $totalPage; $i++): ?>
                         <a href="?page=<?= $i ?>"
                             class="btn <?= $i == $page ? 'btn-success text-white' : 'btn-outline-success' ?>">
@@ -161,7 +154,6 @@ require_once '../koneksi.php';
                         </a>
                     <?php endfor; ?>
 
-                    <!-- Tombol Next -->
                     <?php if ($page < $totalPage): ?>
                         <a href="?page=<?= $page + 1 ?>" class="btn btn-outline-success">Next</a>
                     <?php else: ?>

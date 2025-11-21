@@ -7,8 +7,8 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-if ($_SESSION['user_role'] !== 'panitia') {
-    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
+if ($_SESSION['user_role'] !== 'kandidat') {
+    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Kandidat."));
     exit();
 }
 require_once '../koneksi.php';
