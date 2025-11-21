@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 require_once '../koneksi.php';
@@ -74,144 +73,144 @@ JOIN periode pr ON k.id_periode = pr.id_periode;");
 
             <?php if (!empty($periode_list)): ?>
                 <?php foreach ($periode_list as $data): ?>
-                <div data-aos="flip-right" class="col-lg-3 col-md-5 col-11 mx-auto">
-                    <div class="card rounded-4 card-bg mb-5">
+                    <div data-aos="flip-right" class="col-lg-3 col-md-5 col-11 mx-auto">
+                        <div class="card rounded-4 card-bg mb-5">
 
-                        <!-- Foto Kandidat -->
-                        <img src="../assets/img/<?= htmlspecialchars($data['foto_profil']) ?>"
-                            class="card-img-top p-3 img-fit"
-                            style="border-radius: 26px;"
-                            alt="Foto Kandidat">
+                            <!-- Foto Kandidat -->
+                            <img src="../assets/img/<?= htmlspecialchars($data['foto_profil']) ?>"
+                                class="card-img-top p-3 img-fit"
+                                style="border-radius: 26px;"
+                                alt="Foto Kandidat">
 
-                        <div class="card-body">
-                            <h1 class="card-title poppins-semibold">
-                                <?= htmlspecialchars($data['id_kandidat']) ?>
-                            </h1>
+                            <div class="card-body">
+                                <h1 class="card-title poppins-semibold">
+                                    <?= htmlspecialchars($data['id_kandidat']) ?>
+                                </h1>
 
-                            <hr>
-                            <p class="card-title poppins-semibold">Nama</p>
-                            <p class="card-text"><?= htmlspecialchars($data['nama']) ?></p>
+                                <hr>
+                                <p class="card-title poppins-semibold">Nama</p>
+                                <p class="card-text"><?= htmlspecialchars($data['nama']) ?></p>
 
-                            <hr>
-                            <p class="card-title poppins-semibold">Pendidikan</p>
-                            <?= htmlspecialchars($data['pendidikan']) ?>
+                                <hr>
+                                <p class="card-title poppins-semibold">Pendidikan</p>
+                                <?= htmlspecialchars($data['pendidikan']) ?>
 
-                            <hr>
-                            <p class="card-title poppins-semibold">Pekerjaan</p>
-                            <p class="card-text"><?= htmlspecialchars($data['pekerjaan']) ?>
+                                <hr>
+                                <p class="card-title poppins-semibold">Pekerjaan</p>
+                                <p class="card-text"><?= htmlspecialchars($data['pekerjaan']) ?>
 
-                            <hr>
-                            <p class="card-title poppins-semibold">Alamat</p>
-                            <p class="card-text"><?= htmlspecialchars($data['alamat']) ?></p><br>
+                                    <hr>
+                                <p class="card-title poppins-semibold">Alamat</p>
+                                <p class="card-text"><?= htmlspecialchars($data['alamat']) ?></p><br>
 
-                            <div class="d-grid gap-1">
-                                <!-- Modal Profil Kandidat -->
-                                <a href="#" class="btn-hitam" data-bs-toggle="modal"
-                                    data-bs-target="#modal-profil-<?= htmlspecialchars($data['id_kandidat']) ?>">
-                                    TAMPILKAN LEBIH
-                                </a>
+                                <div class="d-grid gap-1">
+                                    <!-- Modal Profil Kandidat -->
+                                    <a href="#" class="btn-hitam" data-bs-toggle="modal"
+                                        data-bs-target="#modal-profil-<?= htmlspecialchars($data['id_kandidat']) ?>">
+                                        TAMPILKAN LEBIH
+                                    </a>
 
-                                <!-- Modal Pilih -->
-                                <a href="#" class="btn-hitam" data-bs-toggle="modal"
-                                    data-bs-target="#modal-pilih-<?= htmlspecialchars($data['id_kandidat']) ?>">
-                                    PILIH
-                                </a>
+                                    <!-- Modal Pilih -->
+                                    <a href="#" class="btn-hitam" data-bs-toggle="modal"
+                                        data-bs-target="#modal-pilih-<?= htmlspecialchars($data['id_kandidat']) ?>">
+                                        PILIH
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Modal Kandidat -->
-                <div class="modal fade" id="modal-profil-<?= htmlspecialchars($data['id_kandidat']) ?>" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered modal-xl">
-                        <div class="modal-content bg-putih rounded-4">
-                            <div class="modal-body">
-                                <div class="text-end">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-                                <div class="container-fluid">
-                                    <div class="row d-flex">
-
-                                        <!-- Kiri -->
-                                        <div class="col-lg-3 col-12">
-                                            <img src="../assets/img/<?= htmlspecialchars($data['foto_profil']) ?>"
-                                                class="rounded-4 d-block mx-auto mb-3 img-fit">
-
-                                            <h1 class="card-title poppins-semibold">
-                                                <?= htmlspecialchars($data['id_kandidat']) ?>
-                                            </h1>
-
-                                            <hr>
-                                            <p class="card-title poppins-bold">Nama</p>
-                                            <p><?= htmlspecialchars($data['nama']) ?></p>
-
-                                            <hr>
-                                            <p class="card-title poppins-bold">Pendidikan</p>
-                                            <p><?= htmlspecialchars($data['pendidikan']) ?></p>
-
-                                            <hr>
-                                            <p class="card-title poppins-bold">Pekerjaan</p>
-                                            <p><?= htmlspecialchars($data['pekerjaan']) ?></p>
-
-                                            <hr>
-                                            <p class="card-title poppins-bold">Alamat</p>
-                                            <p><?= htmlspecialchars($data['alamat']) ?></p><br>
-
-                                            <div class="d-grid gap-2">
-                                                <button class="btn-hitam" data-bs-toggle="modal"
-                                                    data-bs-target="#modal-pilih-<?= htmlspecialchars($data['id_kandidat']) ?>">
-                                                    PILIH
-                                                </button>
-                                            </div>
-                                        </div>
-
-                                        <!-- Kanan -->
-                                        <div class="col-lg-9 col-12 mt-4">
-                                            <h4 class="poppins-bold">Visi</h4>
-                                            <p><?= htmlspecialchars($data['visi']) ?></p>
-
-                                            <h4 class="poppins-bold mt-4">Misi</h4>
-                                            <p><?= htmlspecialchars($data['misi']) ?></p>
-                                        </div>
-
+                    <!-- Modal Kandidat -->
+                    <div class="modal fade" id="modal-profil-<?= htmlspecialchars($data['id_kandidat']) ?>" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered modal-xl">
+                            <div class="modal-content bg-putih rounded-4">
+                                <div class="modal-body">
+                                    <div class="text-end">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
-                                </div>
 
+                                    <div class="container-fluid">
+                                        <div class="row d-flex">
+
+                                            <!-- Kiri -->
+                                            <div class="col-lg-3 col-12">
+                                                <img src="../assets/img/<?= htmlspecialchars($data['foto_profil']) ?>"
+                                                    class="rounded-4 d-block mx-auto mb-3 img-fit">
+
+                                                <h1 class="card-title poppins-semibold">
+                                                    <?= htmlspecialchars($data['id_kandidat']) ?>
+                                                </h1>
+
+                                                <hr>
+                                                <p class="card-title poppins-bold">Nama</p>
+                                                <p><?= htmlspecialchars($data['nama']) ?></p>
+
+                                                <hr>
+                                                <p class="card-title poppins-bold">Pendidikan</p>
+                                                <p><?= htmlspecialchars($data['pendidikan']) ?></p>
+
+                                                <hr>
+                                                <p class="card-title poppins-bold">Pekerjaan</p>
+                                                <p><?= htmlspecialchars($data['pekerjaan']) ?></p>
+
+                                                <hr>
+                                                <p class="card-title poppins-bold">Alamat</p>
+                                                <p><?= htmlspecialchars($data['alamat']) ?></p><br>
+
+                                                <div class="d-grid gap-2">
+                                                    <button class="btn-hitam" data-bs-toggle="modal"
+                                                        data-bs-target="#modal-pilih-<?= htmlspecialchars($data['id_kandidat']) ?>">
+                                                        PILIH
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <!-- Kanan -->
+                                            <div class="col-lg-9 col-12 mt-4">
+                                                <h4 class="poppins-bold">Visi</h4>
+                                                <p><?= htmlspecialchars($data['visi']) ?></p>
+
+                                                <h4 class="poppins-bold mt-4">Misi</h4>
+                                                <p><?= htmlspecialchars($data['misi']) ?></p>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Modal Kandidat -->
-                <div class="modal fade" id="modal-pilih-<?= $row['id_kandidat'] ?>" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content bg-putih rounded-4">
-                            <div class="modal-body">
+                    <!-- Modal Kandidat -->
+                    <div class="modal fade" id="modal-pilih-<?= $row['id_kandidat'] ?>" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content bg-putih rounded-4">
+                                <div class="modal-body">
 
-                                <div class="text-end">
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div class="text-end">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <h5 class="text-center mb-3">
+                                        Suara tidak dapat diubah setelah diberikan. Apakah yakin memilih?
+                                    </h5>
+
+                                    <div class="text-center mb-3">
+                                        <strong><?= $row['nomor_urut']; ?> – <?= $row['nama']; ?></strong>
+                                    </div>
+
+                                    <div class="d-grid">
+                                        <input type="text" placeholder="Masukkan Token Anda"
+                                            class="form-control-hitam text-uppercase mb-2">
+
+                                        <button class="btn-hitam border-0">YA</button>
+                                    </div>
+
                                 </div>
-
-                                <h5 class="text-center mb-3">
-                                    Suara tidak dapat diubah setelah diberikan. Apakah yakin memilih?
-                                </h5>
-
-                                <div class="text-center mb-3">
-                                    <strong><?= $row['nomor_urut']; ?> – <?= $row['nama']; ?></strong>
-                                </div>
-
-                                <div class="d-grid">
-                                    <input type="text" placeholder="Masukkan Token Anda"
-                                        class="form-control-hitam text-uppercase mb-2">
-
-                                    <button class="btn-hitam border-0">YA</button>
-                                </div>
-
                             </div>
                         </div>
                     </div>
-                </div>
                 <?php endforeach; ?>
 
             <?php else: ?>
