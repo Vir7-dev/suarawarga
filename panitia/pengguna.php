@@ -46,7 +46,7 @@ require_once '../koneksi.php';
                             <a href="periode.php" class="btn-hitam">MANAJEMEN PERIODE</a>
                         </li>
                         <li class="nav-item">
-                            <a href="index.php" class="btn-hitam">Beranda</a>
+                            <a href="index.php" class="btn-hitam">BERANDA</a>
                         </li>
                         <li class="nav-item">
                             <a class="btn-merah" aria-current="page" data-bs-toggle="modal"
@@ -195,31 +195,39 @@ require_once '../koneksi.php';
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form method="POST" action="tambah_pengguna.php">
                             <div class="mb-3">
                                 <label for="" class="col-form-label">NIK <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-underline" id="input-nik">
+                                <input type="text" name="nik" class="form-control input-underline" id="input-nik" required>
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Nama Lengkap <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-underline" id="input-nama">
+                                <input type="text" name="nama_lengkap" class="form-control input-underline" id="input-nama" required>
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Tempat Lahir <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-underline" id="input-tempat-lahir">
+                                <input type="text" name="tempat_lahir" class="form-control input-underline" id="input-tempat-lahir" required>
                             </div>
                             <div class="mb-3">
                                 <label class="col-form-label">Tanggal Lahir <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control input-underline" id="input-tanggal-lahir">
+                                <input type="date" name="tanggal_lahir" class="form-control input-underline" id="input-tanggal-lahir" required>
+                            </div>
+                            <div class="mb-3">
+                            <label for="" class="col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+                                <select name="jenis_kelamin" class="form-control input-underline" required>
+                                    <option value="">Pilih Jenis Kelamin</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
                             </div>
                             <div class="mb-3">
                                 <label class="col-form-label">Agama <span class="text-danger">*</span></label>
-                                <select class="form-control input-underline" id="input-agama">
-                                <option value="" hidden>Pilih Agama</option>
+                                <select class="form-control input-underline" required>
+                                <option value="">Pilih Agama</option>
                                 <option value="Islam">Islam</option>
-                                <option value="Kristen Protestan">Kristen Protestan</option>
+                                <option value="Kristen">Kristen</option>
                                 <option value="Katolik">Katolik</option>
                                 <option value="Hindu">Hindu</option>
                                 <option value="Buddha">Buddha</option>
@@ -228,19 +236,19 @@ require_once '../koneksi.php';
                             </div> 
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Alamat <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-underline" id="input-alamat">
+                                <textarea name="agama" class="form-control input-underline" id="input-alamat" required>
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Pendidikan <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-underline" id="input-pendidikan">
+                                <input type="text" name="pendidikan" class="form-control input-underline" id="input-pendidikan" required>
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Pekerjaan <span
                                         class="text-danger">*</span></label>
-                                <input type="text" class="form-control input-underline" id="input-pekerjaan">
+                                <input type="text" name="pekerjaan" class="form-control input-underline" id="input-pekerjaan" required>
                             </div>
-                            <button type="button" class="btn-hijau">Simpan</button>
+                            <button type="submit" name="tambah" class="btn-hijau">Simpan</button>
                         </form>
                     </div>
                 </div>
