@@ -1,20 +1,61 @@
 <?php
-
 session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
-    exit();
-}
-
-if ($_SESSION['user_role'] !== 'panitia') {
-    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
-    exit();
-}
 require_once '../koneksi.php';
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    $user_id = $_SESSION['user_id'];
+    $visi = $_POST['visi'];
+    $misi = $_POST['misi'];
+
+    // Jika ada upload foto
+    if (!empty($_FILES['foto']['name'])) {
+
+        $foto_nama = $_FILES['foto']['name'];
+        $foto_tmp = $_FILES['foto']['tmp_name'];
+        $foto_ext = strtolower(pathinfo($foto_nama, PATHINFO_EXTENSION));
+
+        $allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
+
+        if (!in_array($foto_ext, $allowed_ext)) {
+            die("Ekstensi file tidak diperbolehkan");
+        }
+
+        $foto_baru = time() . "_" . uniqid() . "." . $foto_ext;
+        $foto_path = "../uploads/" . $foto_baru;
+
+        move_uploaded_file($foto_tmp, $foto_path);
+
+        $sql = "UPDATE kandidat 
+                SET visi = :visi, misi = :misi, foto_profil = :foto 
+                WHERE pengguna_id = :user_id";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            ':visi' => $visi,
+            ':misi' => $misi,
+            ':foto' => $foto_baru,
+            ':user_id' => $user_id
+        ]);
+
+    } else {
+
+        $sql = "UPDATE kandidat 
+                SET visi = :visi, misi = :misi 
+                WHERE pengguna_id = :user_id";
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->execute([
+            ':visi' => $visi,
+            ':misi' => $misi,
+            ':user_id' => $user_id
+        ]);
+    }
+}
 
 
 ?>
+
 
 
 
@@ -47,8 +88,7 @@ require_once '../koneksi.php';
                             <a class="btn-hitam" href="index.php">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn-merah" data-bs-toggle="modal"
-                                data-bs-target="#modal-keluar">KELUAR</a>
+                            <a class="btn-merah" data-bs-toggle="modal" data-bs-target="#modal-keluar">KELUAR</a>
                         </li>
                     </ul>
                 </div>
@@ -60,7 +100,8 @@ require_once '../koneksi.php';
         <div class="row p-3 py-4 rounded-4 card-bg">
             <!-- Profil -->
             <div class="col-lg-3 col-12">
-                <img src="../assets/img/Avatar Vektor Pengguna, Clipart Manusia, Pengguna Perempuan, Ikon PNG dan Vektor dengan Background Transparan untuk Unduh Gratis 6.png" class="rounded-4 d-block mx-auto mb-3 img-fit" alt="...">
+                <img src="../assets/img/Avatar Vektor Pengguna, Clipart Manusia, Pengguna Perempuan, Ikon PNG dan Vektor dengan Background Transparan untuk Unduh Gratis 6.png"
+                    class="rounded-4 d-block mx-auto mb-3 img-fit" alt="...">
                 <p class="card-title poppins-semibold">Nama</p>
                 <p class="card-text">Momo Hirai</p>
                 <hr>
@@ -85,22 +126,25 @@ require_once '../koneksi.php';
                 <div class="mb-4 text-putih ">
                     <h5 class="text-uppercase poppins-semibold text-putih">Visi</h5>
                     <p class="text-text-putih ">
-                        Menjadi sosok pemimpin yang inspiratif, berintegritas, dan mampu menciptakan lingkungan yang
-                        produktif,
-                        inovatif, serta harmonis bagi seluruh anggota komunitas.
+                        <?= nl2br(htmlspecialchars($visi)) ?>
+
                     </p>
                 </div>
 
                 <div>
                     <h5 class="text-uppercase poppins-semibold text-putih">Misi</h5>
-                    <ol class="">
-                        <li>Meningkatkan partisipasi aktif seluruh anggota dalam setiap kegiatan organisasi.</li>
-                        <li>Mendorong kreativitas dan inovasi melalui program-program berbasis ide baru dan teknologi.
-                        </li>
-                        <li>Mewujudkan transparansi serta komunikasi yang terbuka antara anggota dan pengurus.</li>
-                        <li>Mengembangkan kepemimpinan yang adil, disiplin, dan berorientasi pada kerja sama tim.</li>
-                        <li>Menciptakan lingkungan yang inklusif, suportif, dan saling menghargai satu sama lain.</li>
-                    </ol>
+                   <ol>
+                    <?php
+                    $misi_list = explode("\n", $misi);  
+
+                    foreach ($misi_list as $baris) {
+                        $baris = trim($baris);
+                        if ($baris !== "") {
+                            echo "<li>" . htmlspecialchars($baris) . "</li>";
+                        }
+                    }
+                    ?>
+                </ol>
                 </div>
             </div>
 
@@ -120,7 +164,8 @@ require_once '../koneksi.php';
                                 <h5 class="text-center mt-0 mb-3">apakah anda ingin keluar dari website suara warga?
                                 </h5>
                                 <div class="d-grid">
-                                    <button type="button" onclick="window.location.href='../login.php'" class="btn-hitam border-0">YA</button>
+                                    <button type="button" onclick="window.location.href='../login.php'"
+                                        class="btn-hitam border-0">YA</button>
                                 </div>
                             </div>
                         </div>
@@ -136,26 +181,25 @@ require_once '../koneksi.php';
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form>
+                        <form action="" method="POST" enctype="multipart/form-data">
                             <div class="mb-3">
-                                <label for="" class="col-form-label">Foto <span
-                                        class="text-danger">*</span></label>
-                                <input type="file" class="form-control " id="inputGroupFile02">
+                                <label class="col-form-label">Foto</label>
+                                <input type="file" name="foto_profil" class="form-control">
                             </div>
+
                             <div class="mb-3">
-                                <label for="message-text" class="col-form-label">Visi : <span
-                                        class="text-danger">*</span></label>
-                                <textarea class="form-control " id="message-text"
-                                    style="height: 200px;"></textarea>
+                                <label class="col-form-label">Visi : <span class="text-danger">*</span></label>
+                                <textarea name="visi" class="form-control" style="height: 200px;"></textarea>
                             </div>
+
                             <div class="mb-3">
-                                <label for="message-text" class="col-form-label">Misi : <span
-                                        class="text-danger">*</span></label>
-                                <textarea class="form-control " id="message-text"
-                                    style="height: 200px;"></textarea>
+                                <label class="col-form-label">Misi : <span class="text-danger">*</span></label>
+                                <textarea name="misi" class="form-control" style="height: 200px;"></textarea>
                             </div>
-                            <button type="button" class="btn-hijau">Simpan</button>
+
+                            <button type="submit" class="btn-hijau">Simpan</button>
                         </form>
+
                     </div>
                 </div>
             </div>
