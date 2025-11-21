@@ -124,9 +124,7 @@
                             <div class="mb-3">
                                 <label class="col-form-label">Foto <span class="text-danger"></span></label>
                                 <input type="file" name="foto_profil" class="form-control">
-                                <label for="" class="col-form-label">Foto <span
-                                        class="text-danger">*</span></label>
-                                <input type="file" class="form-control " id="inputGroupFile02">
+                                
                             </div>
                             <div class="mb-3">
                                 <label for="message-text" class="col-form-label">Visi : <span
