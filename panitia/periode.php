@@ -12,38 +12,30 @@ if ($_SESSION['user_role'] !== 'panitia') {
 }
 require_once '../koneksi.php';
 
-// ===========================
 // CREATE (TAMBAH)
-// ===========================
 if (isset($_POST['tambah'])) {
 
-    // 1. Ambil data (Tanda [] dihilangkan)
     $nama    = $_POST['nama_periode'];
     $mulai   = $_POST['mulai'];
     $selesai = $_POST['selesai'];
-    $status  = $_POST['status_periode']; // Pastikan nama form input benar
+    $status  = $_POST['status_periode']; 
 
-    // 2. Gunakan Prepared Statement dengan placeholder (?)
     $query = "INSERT INTO periode (nama_periode, mulai, selesai, status_periode)
               VALUES (?, ?, ?, ?)";
 
     try {
         $stmt = $pdo->prepare($query);
-        // 3. Eksekusi query (Data di-bind di sini, AMAN!)
         $stmt->execute([$nama, $mulai, $selesai, $status]);
 
-        header("Location: periode.php?msg=added"); // Redirect ke file PHP
+        header("Location: periode.php?msg=added"); 
         exit;
     } catch (PDOException $e) {
-        // Handle error, misalnya jika nama periode duplikat
         header("Location: periode.php?err=" . urlencode("Gagal tambah data."));
         exit;
     }
 }
 
-// ===========================
 // UPDATE (EDIT) - AMAN DENGAN PDO
-// ===========================
 if (isset($_POST['edit'])) {
 
     // 1. Ambil data

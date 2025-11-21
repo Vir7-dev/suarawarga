@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SESSION['user_role'] !== 'warga') {
-    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
+    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Warga."));
     exit();
 }
 require_once '../koneksi.php';
