@@ -1,22 +1,3 @@
-<?php
-
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
-    exit();
-}
-
-if ($_SESSION['user_role'] !== 'panitia') {
-    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
-    exit();
-}
-require_once '../koneksi.php';
-
-
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,14 +20,13 @@ require_once '../koneksi.php';
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-            <!-- test -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav rounded-3 text-end my-4 p-4 gap-4 button-nav ms-auto mb-2 gap-2">
                         <li class="nav-item">
                             <a href="periode.php" class="btn-hitam">MANAJEMEN PERIODE</a>
                         </li>
                         <li class="nav-item">
-                            <a href="index.php" class="btn-hitam">BERANDA</a>
+                            <a href="index.php" class="btn-hitam">Beranda</a>
                         </li>
                         <li class="nav-item">
                             <a class="btn-merah" aria-current="page" data-bs-toggle="modal"
@@ -94,19 +74,25 @@ require_once '../koneksi.php';
                         </tr>
                         <tbody id="t-body">
                             <?php
+                            include "../koneksi.php";
 
-                            $limit = 10; 
+                            // --- Konfigurasi Pagination ---
+                            $limit = 10; // jumlah baris per halaman
                             $page  = isset($_GET['page']) ? (int)$_GET['page'] : 1;
                             $page  = $page < 1 ? 1 : $page;
 
+                            // Hitung total data
                             $countStmt = $pdo->prepare("SELECT COUNT(*) FROM pengguna");
                             $countStmt->execute();
                             $totalData = $countStmt->fetchColumn();
 
+                            // total halaman
                             $totalPage = ceil($totalData / $limit);
 
+                            // offset
                             $offset = ($page - 1) * $limit;
 
+                            // Ambil data sesuai halaman
                             $stmt = $pdo->prepare("SELECT * FROM pengguna ORDER BY nama ASC LIMIT :limit OFFSET :offset");
                             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
                             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -141,12 +127,14 @@ require_once '../koneksi.php';
 
                 <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
 
+                    <!-- Tombol Prev -->
                     <?php if ($page > 1): ?>
                         <a href="?page=<?= $page - 1 ?>" class="btn btn-outline-success">Prev</a>
                     <?php else: ?>
                         <button class="btn btn-outline-secondary" disabled>Prev</button>
                     <?php endif; ?>
 
+                    <!-- Nomor Halaman -->
                     <?php for ($i = 1; $i <= $totalPage; $i++): ?>
                         <a href="?page=<?= $i ?>"
                             class="btn <?= $i == $page ? 'btn-success text-white' : 'btn-outline-success' ?>">
@@ -154,6 +142,7 @@ require_once '../koneksi.php';
                         </a>
                     <?php endfor; ?>
 
+                    <!-- Tombol Next -->
                     <?php if ($page < $totalPage): ?>
                         <a href="?page=<?= $page + 1 ?>" class="btn btn-outline-success">Next</a>
                     <?php else: ?>
@@ -195,60 +184,45 @@ require_once '../koneksi.php';
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action="tambah_pengguna.php">
+                        <form>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">NIK <span class="text-danger">*</span></label>
-                                <input type="text" name="nik" class="form-control input-underline" id="input-nik" required>
+                                <input type="text" class="form-control input-underline" id="input-nik">
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Nama Lengkap <span
                                         class="text-danger">*</span></label>
-                                <input type="text" name="nama_lengkap" class="form-control input-underline" id="input-nama" required>
+                                <input type="text" class="form-control input-underline" id="input-nama">
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Tempat Lahir <span
                                         class="text-danger">*</span></label>
-                                <input type="text" name="tempat_lahir" class="form-control input-underline" id="input-tempat-lahir" required>
+                                <input type="text" class="form-control input-underline" id="input-tempat-lahir">
                             </div>
                             <div class="mb-3">
-                                <label class="col-form-label">Tanggal Lahir <span class="text-danger">*</span></label>
-                                <input type="date" name="tanggal_lahir" class="form-control input-underline" id="input-tanggal-lahir" required>
+                                <label for="" class="col-form-label">Tanggal Lahir <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control input-underline" id="input-tanggal-lahir">
                             </div>
                             <div class="mb-3">
-                            <label for="" class="col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
-                                <select name="jenis_kelamin" class="form-control input-underline" required>
-                                    <option value="">Pilih Jenis Kelamin</option>
-                                    <option value="Laki-laki">Laki-laki</option>
-                                    <option value="Perempuan">Perempuan</option>
-                                </select>
+                                <label for="" class="col-form-label">Agama <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control input-underline" id="input-agama">
                             </div>
-                            <div class="mb-3">
-                                <label class="col-form-label">Agama <span class="text-danger">*</span></label>
-                                <select class="form-control input-underline" required>
-                                <option value="">Pilih Agama</option>
-                                <option value="Islam">Islam</option>
-                                <option value="Kristen">Kristen</option>
-                                <option value="Katolik">Katolik</option>
-                                <option value="Hindu">Hindu</option>
-                                <option value="Buddha">Buddha</option>
-                                <option value="Konghucu">Konghucu</option>
-                                </select>
-                            </div> 
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Alamat <span class="text-danger">*</span></label>
-                                <textarea name="agama" class="form-control input-underline" id="input-alamat" required>
+                                <input type="text" class="form-control input-underline" id="input-alamat">
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Pendidikan <span
                                         class="text-danger">*</span></label>
-                                <input type="text" name="pendidikan" class="form-control input-underline" id="input-pendidikan" required>
+                                <input type="text" class="form-control input-underline" id="input-pendidikan">
                             </div>
                             <div class="mb-3">
                                 <label for="" class="col-form-label">Pekerjaan <span
                                         class="text-danger">*</span></label>
-                                <input type="text" name="pekerjaan" class="form-control input-underline" id="input-pekerjaan" required>
+                                <input type="text" class="form-control input-underline" id="input-pekerjaan">
                             </div>
-                            <button type="submit" name="tambah" class="btn-hijau">Simpan</button>
+                            <button type="button" class="btn-hijau">Simpan</button>
                         </form>
                     </div>
                 </div>

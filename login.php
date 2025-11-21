@@ -7,6 +7,7 @@ if (!empty($error)) {
   $error = urldecode($error);
 }
 
+// Hanya proses jika ini adalah POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   $nik = trim($_POST['nik'] ?? '');
@@ -16,20 +17,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = "NIK dan Password harus diisi.";
   } else {
     try {
+      // 1. Prepared Statement menggunakan PDO
       $stmt = $pdo->prepare("SELECT id, nama, role, password FROM pengguna WHERE nik = ?");
 
+      // 2. Eksekusi dengan array data.
+      // PDO: bind_param TIDAK ADA. Langsung di execute.
       $stmt->execute([$nik]);
 
+      // 3. Pengecekan jumlah baris
+      // PDO: num_rows TIDAK ADA. Gunakan rowCount().
       if ($stmt->rowCount() === 1) {
 
+        // 4. Ambil data
+        // PDO: fetch_assoc TIDAK ADA. Gunakan fetch(PDO::FETCH_ASSOC).
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // Verifikasi Password
         if (password_verify($password_input, $data['password'])) {
 
+          // Login Berhasil! Set data sesi
           $_SESSION['user_id'] = $data['id'];
           $_SESSION['user_name'] = $data['nama'];
           $_SESSION['user_role'] = $data['role'];
 
+          // Redirect
           if ($data['role'] === 'panitia') {
             header("Location: panitia/index.php");
           } elseif ($data['role'] === 'kandidat') {
@@ -45,12 +56,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $error = "NIK atau Password salah.";
       }
     } catch (PDOException $e) {
+      // Menangkap error jika ada masalah di query database
       $error = "Terjadi kesalahan database: " . $e->getMessage();
       // Di produksi, ganti baris di atas dengan: $error = "Terjadi kesalahan internal.";
     }
   }
 }
 
+// Jika POST gagal, atau ini adalah GET request dengan error di URL, redirect ke halaman login (diri sendiri)
+// Kita hanya redirect jika POST gagal DAN variabel $error berisi sesuatu.
 if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($error)) {
   header("Location: login.php?error=" . urlencode($error));
   exit;

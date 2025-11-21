@@ -1,64 +1,3 @@
-<?php
-session_start();
-require_once '../koneksi.php';
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    $user_id = $_SESSION['user_id'];
-    $visi = $_POST['visi'];
-    $misi = $_POST['misi'];
-
-    // Jika ada upload foto
-    if (!empty($_FILES['foto']['name'])) {
-
-        $foto_nama = $_FILES['foto']['name'];
-        $foto_tmp = $_FILES['foto']['tmp_name'];
-        $foto_ext = strtolower(pathinfo($foto_nama, PATHINFO_EXTENSION));
-
-        $allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
-
-        if (!in_array($foto_ext, $allowed_ext)) {
-            die("Ekstensi file tidak diperbolehkan");
-        }
-
-        $foto_baru = time() . "_" . uniqid() . "." . $foto_ext;
-        $foto_path = "../uploads/" . $foto_baru;
-
-        move_uploaded_file($foto_tmp, $foto_path);
-
-        $sql = "UPDATE kandidat 
-                SET visi = :visi, misi = :misi, foto_profil = :foto 
-                WHERE pengguna_id = :user_id";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':visi' => $visi,
-            ':misi' => $misi,
-            ':foto' => $foto_baru,
-            ':user_id' => $user_id
-        ]);
-
-    } else {
-
-        $sql = "UPDATE kandidat 
-                SET visi = :visi, misi = :misi 
-                WHERE pengguna_id = :user_id";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':visi' => $visi,
-            ':misi' => $misi,
-            ':user_id' => $user_id
-        ]);
-    }
-}
-
-
-?>
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -83,12 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav rounded-3 text-end my-4 p-4 gap-4 button-nav ms-auto mb-2 gap-2">
+                       <ul class="navbar-nav rounded-3 text-end my-4 p-4 gap-4 button-nav ms-auto mb-2 gap-2">
                         <li class="nav-item">
                             <a class="btn-hitam" href="index.php">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn-merah" data-bs-toggle="modal" data-bs-target="#modal-keluar">KELUAR</a>
+                            <a class="btn-merah" data-bs-toggle="modal"
+                                data-bs-target="#modal-keluar">KELUAR</a>
                         </li>
                     </ul>
                 </div>
@@ -100,8 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="row p-3 py-4 rounded-4 card-bg">
             <!-- Profil -->
             <div class="col-lg-3 col-12">
-                <img src="../assets/img/Avatar Vektor Pengguna, Clipart Manusia, Pengguna Perempuan, Ikon PNG dan Vektor dengan Background Transparan untuk Unduh Gratis 6.png"
-                    class="rounded-4 d-block mx-auto mb-3 img-fit" alt="...">
+                <img src="../assets/img/Avatar Vektor Pengguna, Clipart Manusia, Pengguna Perempuan, Ikon PNG dan Vektor dengan Background Transparan untuk Unduh Gratis 6.png" class="rounded-4 d-block mx-auto mb-3 img-fit" alt="...">
                 <p class="card-title poppins-semibold">Nama</p>
                 <p class="card-text">Momo Hirai</p>
                 <hr>
@@ -165,8 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                                 <h5 class="text-center mt-0 mb-3">apakah anda ingin keluar dari website suara warga?
                                 </h5>
                                 <div class="d-grid">
-                                    <button type="button" onclick="window.location.href='../login.php'"
-                                        class="btn-hitam border-0">YA</button>
+                                    <button type="button" onclick="window.location.href='../login.php'" class="btn-hitam border-0">YA</button>
                                 </div>
                             </div>
                         </div>
@@ -182,25 +120,28 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="" method="POST" enctype="multipart/form-data">
+                        <form>
                             <div class="mb-3">
                                 <label class="col-form-label">Foto <span class="text-danger"></span></label>
                                 <input type="file" name="foto_profil" class="form-control">
+                                <label for="" class="col-form-label">Foto <span
+                                        class="text-danger">*</span></label>
+                                <input type="file" class="form-control " id="inputGroupFile02">
                             </div>
-
                             <div class="mb-3">
-                                <label class="col-form-label">Visi : <span class="text-danger">*</span></label>
-                                <textarea name="visi" class="form-control" style="height: 200px;"></textarea>
+                                <label for="message-text" class="col-form-label">Visi : <span
+                                        class="text-danger">*</span></label>
+                                <textarea class="form-control " id="message-text"
+                                    style="height: 200px;"></textarea>
                             </div>
-
                             <div class="mb-3">
-                                <label class="col-form-label">Misi : <span class="text-danger">*</span></label>
-                                <textarea name="misi" class="form-control" style="height: 200px;"></textarea>
+                                <label for="message-text" class="col-form-label">Misi : <span
+                                        class="text-danger">*</span></label>
+                                <textarea class="form-control " id="message-text"
+                                    style="height: 200px;"></textarea>
                             </div>
-
-                            <button type="submit" class="btn-hijau">Simpan</button>
+                            <button type="button" class="btn-hijau">Simpan</button>
                         </form>
-
                     </div>
                 </div>
             </div>

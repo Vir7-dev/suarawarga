@@ -1,23 +1,3 @@
-<?php
-
-session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
-    exit();
-}
-
-if ($_SESSION['user_role'] !== 'kandidat') {
-    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Kandidat."));
-    exit();
-}
-require_once '../koneksi.php';
-
-
-?>
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 

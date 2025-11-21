@@ -1,16 +1,29 @@
+
 <?php
 session_start();
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
-    exit();
-}
-
-if ($_SESSION['user_role'] !== 'panitia') {
-    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
-    exit();
-}
 require_once '../koneksi.php';
+try {
+    // Gunakan $pdo->query() jika tidak ada input user (SELECT murni)
+    $stmt = $pdo->query("SELECT
+    k.visi,
+    k.misi,
+    k.foto_profil,
+    k.id_kandidat,
+    p.nama,
+    p.pendidikan,
+    p.pekerjaan,
+    p.alamat,
+    pr.nama_periode
+FROM kandidat k
+JOIN pengguna p ON k.pengguna_id = p.id
+JOIN periode pr ON k.id_periode = pr.id_periode;");
+    // Ambil semua hasil dalam bentuk array asosiatif
+    $periode_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Tangani error pengambilan data
+    $error_fetch = "Gagal mengambil data periode.";
+    $periode_list = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -59,117 +72,150 @@ require_once '../koneksi.php';
         <h2 class="text-center poppins-bold mb-5">Pemilihan Ketua RT Periode 2025–2026</h2>
         <div class="row mb-5">
 
-            <!-- Kandidat 1 -->
-            <div data-aos="flip-right" class="col-lg-3 col-md-5 col-11 mx-auto">
-                <div class="card rounded-4 card-bg mb-5">
-                    <img src="../assets/img/Avatar Vektor Pengguna, Clipart Manusia, Pengguna Perempuan, Ikon PNG dan Vektor dengan Background Transparan untuk Unduh Gratis 6.png"
-                        style="border-radius: 26px;" class="card-img-top p-3 img-fit" alt="Kandidat 1">
-                    <div class="card-body">
-                        <h1 class="card-title poppins-semibold">01</h1>
-                        <hr>
-                        <p class="card-title poppins-semibold">Nama</p>
-                        <p class="card-text">Momo Hirai</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Pendidikan</p>
-                        <p class="card-text">Diploma IV</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Pekerjaan</p>
-                        <p class="card-text">Wiraswasta</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Alamat</p>
-                        <p class="card-text">Buana Vista Indah 2 Blok A No.48</p><br>
-                        <div class="d-grid gap-1">
-                            <a href="#" class="btn-hitam" data-bs-toggle="modal"
-                                data-bs-target="#modal-profil-kandidat">TAMPILKAN LEBIH</a>
-                            <a href="#" class="btn-hitam" data-bs-toggle="modal" data-bs-target="#modal-pilih">PILIH</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php if (!empty($periode_list)): ?>
+                <?php foreach ($periode_list as $data): ?>
+                <div data-aos="flip-right" class="col-lg-3 col-md-5 col-11 mx-auto">
+                    <div class="card rounded-4 card-bg mb-5">
 
-            <!-- Kandidat 2 -->
-            <div data-aos="flip-right" class="col-lg-3 col-md-5 col-11 mx-auto">
-                <div class="card rounded-4 card-bg mb-5">
-                    <img src="../assets/img/Avatar Vektor Pengguna, Clipart Manusia, Pengguna Perempuan, Ikon PNG dan Vektor dengan Background Transparan untuk Unduh Gratis 6.png"
-                        style="border-radius: 26px;" class="card-img-top p-3 img-fit" alt="Kandidat 2">
-                    <div class="card-body">
-                        <h1 class="card-title poppins-semibold">02</h1>
-                        <hr>
-                        <p class="card-title poppins-semibold">Nama</p>
-                        <p class="card-text">Jihyo Park</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Pendidikan</p>
-                        <p class="card-text">Sarjana Komunikasi</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Pekerjaan</p>
-                        <p class="card-text">Pegawai Negeri</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Alamat</p>
-                        <p class="card-text">Jl. Melati Raya No.12, RT 02 RW 05</p><br>
-                        <div class="d-grid gap-1">
-                            <a href="#" class="btn-hitam" data-bs-toggle="modal"
-                                data-bs-target="#modal-profil-kandidat">TAMPILKAN LEBIH</a>
-                            <a href="#" class="btn-hitam" data-bs-toggle="modal" data-bs-target="#modal-pilih">PILIH</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        <!-- Foto Kandidat -->
+                        <img src="../assets/img/<?= htmlspecialchars($data['foto_profil']) ?>"
+                            class="card-img-top p-3 img-fit"
+                            style="border-radius: 26px;"
+                            alt="Foto Kandidat">
 
-            <!-- Kandidat 3 -->
-            <div data-aos="flip-right" class="col-lg-3 col-md-5 col-11 mx-auto">
-                <div class="card rounded-4 card-bg mb-5">
-                    <img src="../assets/img/Avatar Vektor Pengguna, Clipart Manusia, Pengguna Perempuan, Ikon PNG dan Vektor dengan Background Transparan untuk Unduh Gratis 6.png"
-                        style="border-radius: 26px;" class="card-img-top p-3 img-fit" alt="Kandidat 3">
-                    <div class="card-body">
-                        <h1 class="card-title poppins-semibold">03</h1>
-                        <hr>
-                        <p class="card-title poppins-semibold">Nama</p>
-                        <p class="card-text">Nayeon Im</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Pendidikan</p>
-                        <p class="card-text">SMA Sederajat</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Pekerjaan</p>
-                        <p class="card-text">Ibu Rumah Tangga</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Alamat</p>
-                        <p class="card-text">Jl. Cempaka Putih No.8, RT 03 RW 06</p><br>
-                        <div class="d-grid gap-1">
-                            <a href="#" class="btn-hitam" data-bs-toggle="modal"
-                                data-bs-target="#modal-profil-kandidat">TAMPILKAN LEBIH</a>
-                            <a href="#" class="btn-hitam" data-bs-toggle="modal" data-bs-target="#modal-pilih">PILIH</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        <div class="card-body">
+                            <h1 class="card-title poppins-semibold">
+                                <?= htmlspecialchars($data['id_kandidat']) ?>
+                            </h1>
 
-            <!-- Kandidat 4 -->
-            <div data-aos="flip-right" class="col-lg-3 col-md-5 col-11 mx-auto">
-                <div class="card rounded-4 card-bg mb-5">
-                    <img src="../assets/img/Avatar Vektor Pengguna, Clipart Manusia, Pengguna Perempuan, Ikon PNG dan Vektor dengan Background Transparan untuk Unduh Gratis 6.png"
-                        style="border-radius: 26px;" class="card-img-top p-3 img-fit" alt="Kandidat 4">
-                    <div class="card-body">
-                        <h1 class="card-title poppins-semibold">04</h1>
-                        <hr>
-                        <p class="card-title poppins-semibold">Nama</p>
-                        <p class="card-text">Sana Minatozaki</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Pendidikan</p>
-                        <p class="card-text">Magister Manajemen</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Pekerjaan</p>
-                        <p class="card-text">Karyawan Swasta</p>
-                        <hr>
-                        <p class="card-title poppins-semibold">Alamat</p>
-                        <p class="card-text">Jl. Anggrek No.25, RT 04 RW 02</p><br>
-                        <div class="d-grid gap-1">
-                            <a href="#" class="btn-hitam" data-bs-toggle="modal"
-                                data-bs-target="#modal-profil-kandidat">TAMPILKAN LEBIH</a>
-                            <a href="#" class="btn-hitam" data-bs-toggle="modal" data-bs-target="#modal-pilih">PILIH</a>
+                            <hr>
+                            <p class="card-title poppins-semibold">Nama</p>
+                            <p class="card-text"><?= htmlspecialchars($data['nama']) ?></p>
+
+                            <hr>
+                            <p class="card-title poppins-semibold">Pendidikan</p>
+                            <?= htmlspecialchars($data['pendidikan']) ?>
+
+                            <hr>
+                            <p class="card-title poppins-semibold">Pekerjaan</p>
+                            <p class="card-text"><?= htmlspecialchars($data['pekerjaan']) ?>
+
+                            <hr>
+                            <p class="card-title poppins-semibold">Alamat</p>
+                            <p class="card-text"><?= htmlspecialchars($data['alamat']) ?></p><br>
+
+                            <div class="d-grid gap-1">
+                                <!-- Modal Profil Kandidat -->
+                                <a href="#" class="btn-hitam" data-bs-toggle="modal"
+                                    data-bs-target="#modal-profil-<?= htmlspecialchars($data['id_kandidat']) ?>">
+                                    TAMPILKAN LEBIH
+                                </a>
+
+                                <!-- Modal Pilih -->
+                                <a href="#" class="btn-hitam" data-bs-toggle="modal"
+                                    data-bs-target="#modal-pilih-<?= htmlspecialchars($data['id_kandidat']) ?>">
+                                    PILIH
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+
+                <!-- Modal Kandidat -->
+                <div class="modal fade" id="modal-profil-<?= htmlspecialchars($data['id_kandidat']) ?>" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content bg-putih rounded-4">
+                            <div class="modal-body">
+                                <div class="text-end">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <div class="container-fluid">
+                                    <div class="row d-flex">
+
+                                        <!-- Kiri -->
+                                        <div class="col-lg-3 col-12">
+                                            <img src="../assets/img/<?= htmlspecialchars($data['foto_profil']) ?>"
+                                                class="rounded-4 d-block mx-auto mb-3 img-fit">
+
+                                            <h1 class="card-title poppins-semibold">
+                                                <?= htmlspecialchars($data['id_kandidat']) ?>
+                                            </h1>
+
+                                            <hr>
+                                            <p class="card-title poppins-bold">Nama</p>
+                                            <p><?= htmlspecialchars($data['nama']) ?></p>
+
+                                            <hr>
+                                            <p class="card-title poppins-bold">Pendidikan</p>
+                                            <p><?= htmlspecialchars($data['pendidikan']) ?></p>
+
+                                            <hr>
+                                            <p class="card-title poppins-bold">Pekerjaan</p>
+                                            <p><?= htmlspecialchars($data['pekerjaan']) ?></p>
+
+                                            <hr>
+                                            <p class="card-title poppins-bold">Alamat</p>
+                                            <p><?= htmlspecialchars($data['alamat']) ?></p><br>
+
+                                            <div class="d-grid gap-2">
+                                                <button class="btn-hitam" data-bs-toggle="modal"
+                                                    data-bs-target="#modal-pilih-<?= htmlspecialchars($data['id_kandidat']) ?>">
+                                                    PILIH
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Kanan -->
+                                        <div class="col-lg-9 col-12 mt-4">
+                                            <h4 class="poppins-bold">Visi</h4>
+                                            <p><?= htmlspecialchars($data['visi']) ?></p>
+
+                                            <h4 class="poppins-bold mt-4">Misi</h4>
+                                            <p><?= htmlspecialchars($data['misi']) ?></p>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Kandidat -->
+                <div class="modal fade" id="modal-pilih-<?= $row['id_kandidat'] ?>" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content bg-putih rounded-4">
+                            <div class="modal-body">
+
+                                <div class="text-end">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <h5 class="text-center mb-3">
+                                    Suara tidak dapat diubah setelah diberikan. Apakah yakin memilih?
+                                </h5>
+
+                                <div class="text-center mb-3">
+                                    <strong><?= $row['nomor_urut']; ?> – <?= $row['nama']; ?></strong>
+                                </div>
+
+                                <div class="d-grid">
+                                    <input type="text" placeholder="Masukkan Token Anda"
+                                        class="form-control-hitam text-uppercase mb-2">
+
+                                    <button class="btn-hitam border-0">YA</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+
+            <?php else: ?>
+            <?php endif; ?>
 
         </div>
     </div>
@@ -364,7 +410,7 @@ require_once '../koneksi.php';
                                 <h5 class="text-center mt-0 mb-3">Apakah Anda ingin keluar dari website <b>Suara
                                         Warga</b>?</h5>
                                 <div class="d-grid">
-                                    <button type="button" onclick="window.location.href='../logout.php'" class="btn-hitam border-0">YA</button>
+                                    <button type="button" onclick="window.location.href='../login.php'" class="btn-hitam border-0">YA</button>
                                 </div>
                             </div>
                         </div>
