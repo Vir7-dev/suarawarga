@@ -251,7 +251,7 @@ try {
         <div class="row p-3 py-4 gap-4 gap-md-0 rounded-4 card-bg">
             <div class="col-12 flex-md-row flex-column d-flex justify-content-between align-items-center mb-3">
                 <h2 class="text-left poppins-bold text-putih">Hasil Pemilihan</h2>
-                <a href="" class="text-sedang btn-hitam">CETAK PEMILIHAN</a>
+                <a href='../pdf.php' class="text-sedang btn-hitam">CETAK PEMILIHAN</a>
             </div>
             <div class="col-lg-8">
 

@@ -28,6 +28,10 @@ JOIN periode pr ON k.id_periode = pr.id_periode;");
     $error_fetch = "Gagal mengambil data periode.";
     $periode_list = [];
 }
+
+
+  
+
 ?>
 
 <!DOCTYPE html>
@@ -225,12 +229,14 @@ JOIN periode pr ON k.id_periode = pr.id_periode;");
     </div>
 
     <!-- Diagram -->
+
+    
     <div class="container col-lg-12 col-10  mb-5">
         <h2 class="text-center poppins-bold mb-5">Hasil Sementara Pemilihan Ketua RT Periode 2025–2026</h2>
         <div class="row p-3 py-4 gap-4 gap-md-0  rounded-4 card-bg">
             <div class="col-12 flex-md-row flex-column  d-flex justify-content-between align-items-center mb-3">
                 <h2 class="text-left   poppins-bold text-putih">Hasil Pemilihan</h2>
-                <a href="" class=" text-sedang btn-hitam">CETAK PEMILIHAN</a>
+                <a href="../pdf.php" class=" text-sedang btn-hitam">CETAK PEMILIHAN</a>
             </div>
             <div class="col-lg-8 ">
                 <div class="d-flex justify-content-around bg-chart gap-lg-4 gap-3 p-1 px-md-4 py-4 rounded-4 bg-putih h-100">
@@ -261,7 +267,7 @@ JOIN periode pr ON k.id_periode = pr.id_periode;");
                         <div class="row">
                             <div class="col d-flex text-center text-align-center  flex-column ">
                                 <p class="poppins-bold fs-5">40%</p>
-                                <p class="poppins">Nevin rin</p>
+                                <p class="poppins">Nevin rin</p>  
                             </div>
                             <div class="col d-flex text-center flex-column ">
                                 <p class="poppins-bold fs-5">40%</p>
