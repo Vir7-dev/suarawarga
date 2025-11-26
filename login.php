@@ -2,12 +2,14 @@
 session_start();
 require_once 'koneksi.php';
 
+// definisikan variabel supaya tidak undefined
+$nik = '';
 $error = $_GET['error'] ?? '';
 if (!empty($error)) {
   $error = urldecode($error);
 }
 
-// Hanya proses jika ini adalah POST request
+// Proses jika POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
   $nik = trim($_POST['nik'] ?? '');
@@ -17,57 +19,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = "NIK dan Password harus diisi.";
   } else {
     try {
-      // 1. Prepared Statement menggunakan PDO
       $stmt = $pdo->prepare("SELECT id, nama, role, password FROM pengguna WHERE nik = ?");
-
-      // 2. Eksekusi dengan array data.
-      // PDO: bind_param TIDAK ADA. Langsung di execute.
       $stmt->execute([$nik]);
 
-      // 3. Pengecekan jumlah baris
-      // PDO: num_rows TIDAK ADA. Gunakan rowCount().
-      if ($stmt->rowCount() === 1) {
+      // Ambil data
+      $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // 4. Ambil data
-        // PDO: fetch_assoc TIDAK ADA. Gunakan fetch(PDO::FETCH_ASSOC).
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+      if ($data && password_verify($password_input, $data['password'])) {
 
-        // Verifikasi Password
-        if (password_verify($password_input, $data['password'])) {
+        // SIMPAN SESSION
+        $_SESSION['user_id'] = $data['id'];
+        $_SESSION['user_name'] = $data['nama'];
+        $_SESSION['user_role'] = $data['role'];
 
-          // Login Berhasil! Set data sesi
-          $_SESSION['user_id'] = $data['id'];
-          $_SESSION['user_name'] = $data['nama'];
-          $_SESSION['user_role'] = $data['role'];
-
-          // Redirect
-          if ($data['role'] === 'panitia') {
-            header("Location: panitia/index.php");
-          } elseif ($data['role'] === 'kandidat') {
-            header("Location: kandidat/index.php");
-          } elseif ($data['role'] === 'warga') {
-            header("Location: warga/index.php");
-          }
-          exit();
-        } else {
-          $error = "NIK atau Password salah.";
+        // Redirect berdasarkan role
+        if ($data['role'] === 'panitia') {
+          header("Location: panitia/index.php");
+        } elseif ($data['role'] === 'kandidat') {
+          header("Location: kandidat/index.php");
+        } elseif ($data['role'] === 'warga') {
+          header("Location: warga/index.php");
         }
+        exit;
       } else {
         $error = "NIK atau Password salah.";
       }
     } catch (PDOException $e) {
-      // Menangkap error jika ada masalah di query database
-      $error = "Terjadi kesalahan database: " . $e->getMessage();
-      // Di produksi, ganti baris di atas dengan: $error = "Terjadi kesalahan internal.";
+      $error = "Terjadi kesalahan database.";
     }
   }
-}
 
-// Jika POST gagal, atau ini adalah GET request dengan error di URL, redirect ke halaman login (diri sendiri)
-// Kita hanya redirect jika POST gagal DAN variabel $error berisi sesuatu.
-if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($error)) {
-  header("Location: login.php?error=" . urlencode($error));
-  exit;
+  // Redirect kembali ke login dengan error
+  if (!empty($error)) {
+    header("Location: login.php?error=" . urlencode($error));
+    exit;
+  }
 }
 ?>
 
@@ -97,31 +83,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($error)) {
 
         <form action="login.php" method="POST" class="text-white">
           <label class="form-label">NIK</label>
-          <input
-            type="text"
-            name="nik"
-            id="nik_input"
+          <input type="text" name="nik" id="nik_input"
             class="form-control w-100 mb-3 custom-input"
             placeholder="Masukkan NIK"
             required
-            value="<?= htmlspecialchars($nik ?? '') ?>" />
+            value="<?= htmlspecialchars($nik) ?>" />
 
           <label class="form-label">Password</label>
-          <input
-            type="password"
-            name="password"
-            id="password_input"
+          <input type="password" name="password" id="password_input"
             class="form-control w-100 mb-3 custom-input"
             placeholder="Masukkan Password"
             required />
 
-          <div class="d-flex justify-content-between align-items-center mb-3">
-          </div>
-
-          <!-- Tombol full width -->
-          <button type="submit" class="btn btn-dark w-100">
-            LOG IN
-          </button>
+          <button type="submit" class="btn btn-dark w-100">LOG IN</button>
         </form>
       </div>
     </div>
@@ -130,9 +104,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($error)) {
       <img src="assets/img/logo.png" class="img-fluid" alt="">
     </div>
   </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Peringatan</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <?php
+          if (isset($_SESSION['error'])) {
+            echo htmlspecialchars($_SESSION['error']);
+            unset($_SESSION['error']); // hapus agar tidak muncul lagi
+          }
+          ?>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 
-</html>
 <script>
   const nikInput = document.getElementById("nik_input");
   const passwordInput = document.getElementById("password_input");

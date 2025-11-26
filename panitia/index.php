@@ -1,51 +1,51 @@
 <?php
 session_start();
+echo $_SESSION['user_role'];
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] != 'panitia') {
+    header("Location: ../login.php");
+    exit;
+}
+
 require_once '../koneksi.php';
 try {
-    // Gunakan $pdo->query() jika tidak ada input user (SELECT murni)
+    // LIST KANDIDAT
     $stmt = $pdo->query("SELECT
-    k.visi,
-    k.misi,
-    k.foto_profil,
-    k.id_kandidat,
-    p.nama,
-    p.pendidikan,
-    p.pekerjaan,
-    p.alamat,
-    pr.nama_periode
-FROM kandidat k
-JOIN pengguna p ON k.pengguna_id = p.id
-JOIN periode pr ON k.id_periode = pr.id_periode;");
-    // Ambil semua hasil dalam bentuk array asosiatif
+        k.visi,
+        k.misi,
+        k.foto_profil,
+        k.id_kandidat,
+        p.nama,
+        p.pendidikan,
+        p.pekerjaan,
+        p.alamat,
+        pr.nama_periode
+    FROM kandidat k
+    JOIN pengguna p ON k.pengguna_id = p.id
+    JOIN periode pr ON k.id_periode = pr.id_periode;");
+    
     $periode_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // JUMLAH SUARA
+    $stmt1 = $stmt2 = $pdo->query("SELECT 
+        k.id_kandidat,
+        k.pengguna_id,
+        p.nama,
+        COUNT(s.id_suara) AS total_suara
+    FROM kandidat k
+    LEFT JOIN suara s ON k.id_kandidat = s.kandidat_id 
+    LEFT JOIN pengguna p ON p.id = k.pengguna_id
+    GROUP BY k.id_kandidat, k.pengguna_id, p.nama");
+
+    $suara = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+    $kandidat_ids = array_column($suara, 'id_kandidat');
+    $pengguna_id  = array_column($suara, 'nama');
+    $total_suara  = array_column($suara, 'total_suara');
+
 } catch (PDOException $e) {
-    // Tangani error pengambilan data
     $error_fetch = "Gagal mengambil data periode.";
     $periode_list = [];
 }
-?>
-<?php
-$conn = mysqli_connect("localhost", "root", "", "suarawarga");
-
-$sql = "SELECT 
-            k.id_kandidat,
-            k.pengguna_id,
-            p.nama,
-            COUNT(s.id_suara) as total_suara
-        FROM kandidat k
-        LEFT JOIN suara s ON k.id_kandidat = s.kandidat_id 
-        LEFT JOIN pengguna p ON p.id = k.pengguna_id
-        GROUP BY k.id_kandidat, k.pengguna_id, p.nama";
-
-$result = mysqli_query($conn, $sql);
-
-// Ambil semua data
-$data = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-// Pisahkan per kolom untuk JavaScript
-$kandidat_ids = array_column($data, 'id_kandidat');
-$pengguna_id = array_column($data, 'nama');
-$total_suara = array_column($data, 'total_suara');
 ?>
 
 <!DOCTYPE html>
@@ -236,8 +236,8 @@ $total_suara = array_column($data, 'total_suara');
                         </div>
                     </div>
                 <?php endforeach; ?>
-
             <?php else: ?>
+
             <?php endif; ?>
 
         </div>
@@ -255,8 +255,7 @@ $total_suara = array_column($data, 'total_suara');
             </div>
             <div class="col-lg-8">
 
-                <div
-                    class="d-flex justify-content-around bg-chart gap-lg-4 gap-3 p-1 px-md-4 py-4 rounded-4 bg-putih h-100">
+                <div class="d-flex justify-content-around bg-chart gap-lg-4 gap-3 p-1 px-md-4 py-4 rounded-4 bg-putih h-100">
                     <canvas id="myChart" style="width: 100%;"></canvas>
                     <script>
                         var xValues = <?php echo json_encode($pengguna_id); ?>;
@@ -276,11 +275,11 @@ $total_suara = array_column($data, 'total_suara');
                                 legend: {
                                     display: false
                                 },
-                                title: { 
+                                title: {
                                     display: true,
                                     text: "TOTAL SUARA"
                                 },
-                                 scales: {
+                                scales: {
                                     yAxes: [{
                                         ticks: {
                                             beginAtZero: true 
@@ -293,8 +292,7 @@ $total_suara = array_column($data, 'total_suara');
                 </div>
             </div>
             <div class="col-lg-4">
-                <div
-                    class="d-flex justify-content-around bg-chart gap-lg-4 gap-3 p-1 px-md-4 py-4 rounded-4 bg-putih h-100">
+                <div class="d-flex justify-content-around bg-chart gap-lg-4 gap-3 p-1 px-md-4 py-4 rounded-4 bg-putih h-100">
                     <canvas id="myChart1" style="width: 100%; height: 100%;"></canvas>
                     <script>
                         var xValues = <?php echo json_encode($pengguna_id); ?>;
@@ -453,7 +451,7 @@ $total_suara = array_column($data, 'total_suara');
                                 <h5 class="text-center mt-0 mb-3">Apakah Anda ingin keluar dari website <b>Suara
                                         Warga</b>?</h5>
                                 <div class="d-grid">
-                                    <button type="button" onclick="window.location.href='../login.php'" class="btn-hitam border-0">YA</button>
+                                    <button type="button" onclick="window.location.href='../logout.php'" class="btn-hitam border-0">YA</button>
                                 </div>
                             </div>
                         </div>

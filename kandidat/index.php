@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !='kandidat') {
+    header("Location: ../login.php");
+    exit;
+}
+
+
 require_once '../koneksi.php';
 try {
 	// Gunakan $pdo->query() jika tidak ada input user (SELECT murni)
@@ -25,56 +32,6 @@ JOIN periode pr ON k.id_periode = pr.id_periode;");
 }
 ?>
 
-<?php
-require_once '../koneksi.php';
-try {
-    // Gunakan $pdo->query() jika tidak ada input user (SELECT murni)
-    $stmt = $pdo->query("SELECT
-    k.visi,
-    k.misi,
-    k.foto_profil,
-    k.id_kandidat,
-    p.nama,
-    p.pendidikan,
-    p.pekerjaan,
-    p.alamat,
-    pr.nama_periode
-FROM kandidat k
-JOIN pengguna p ON k.pengguna_id = p.id
-JOIN periode pr ON k.id_periode = pr.id_periode;");
-    // Ambil semua hasil dalam bentuk array asosiatif
-    $periode_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    // Tangani error pengambilan data
-    $error_fetch = "Gagal mengambil data periode.";
-    $periode_list = [];
-}
-?>
-<?php
-$conn = mysqli_connect("localhost", "root", "", "suarawarga");
-
-$sql = "SELECT 
-            k.id_kandidat,
-            k.pengguna_id,
-            p.nama,
-            COUNT(s.id_suara) as total_suara
-        FROM kandidat k
-        LEFT JOIN suara s ON k.id_kandidat = s.kandidat_id 
-        LEFT JOIN pengguna p ON p.id = k.pengguna_id
-        GROUP BY k.id_kandidat, k.pengguna_id, p.nama";
-
-$result = mysqli_query($conn, $sql);
-
-// Ambil semua data
-$data = mysqli_fetch_all($result, MYSQLI_ASSOC);
-
-// Pisahkan per kolom untuk JavaScript
-$kandidat_ids = array_column($data, 'id_kandidat');
-$pengguna_id = array_column($data, 'nama');
-$total_suara = array_column($data, 'total_suara');
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -86,7 +43,6 @@ $total_suara = array_column($data, 'total_suara');
 	<link rel="stylesheet" href="../style.css">
 	<link rel="stylesheet" href="../fontawesome/css/all.min.css">
 	<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 </head>
 
 <body class="bg">
@@ -268,87 +224,67 @@ $total_suara = array_column($data, 'total_suara');
 	</div>
 
 	<!-- Diagram -->
-	<div class="container col-lg-12 col-10 mb-5">
-        <h2 class="text-center poppins-bold mb-5">
-            Hasil Sementara Pemilihan Ketua RT Periode 2025–2026s
-        </h2>
-        <div class="row p-3 py-4 gap-4 gap-md-0 rounded-4 card-bg">
-            <div class="col-12 flex-md-row flex-column d-flex justify-content-between align-items-center mb-3">
-                <h2 class="text-left poppins-bold text-putih">Hasil Pemilihan</h2>
-                <a href="" class="text-sedang btn-hitam">CETAK PEMILIHAN</a>
-            </div>
-            <div class="col-lg-8">
+	<div class="container col-lg-12 col-10  mb-5">
+		<h2 class="text-center poppins-bold mb-5">Hasil Sementara Pemilihan Ketua RT Periode 2025–2026</h2>
+		<div class="row p-3 py-4 gap-4 gap-md-0  rounded-4 card-bg">
+			<div class="col-12 flex-md-row flex-column  d-flex justify-content-between align-items-center mb-3">
+				<h2 class="text-left   poppins-bold text-putih">Hasil Pemilihan</h2>
+				<a href="" class=" text-sedang btn-hitam">CETAK PEMILIHAN</a>
+			</div>
+			<div class="col-lg-8 ">
+				<div class="d-flex justify-content-around bg-chart gap-lg-4 gap-3 p-1 px-md-4 py-4 rounded-4 bg-putih h-100">
+					<div class="box-satu">
+						<div class="grafik-batang grafik-batang1" data-height="250" style="--target-height: 250px; background-color: #86A83D;"></div>
+						<p class="text-center poppins text-hitam fs-6">Nevin Rin</p>
+					</div>
+					<div class="box-satu">
+						<div class="grafik-batang grafik-batang2" data-height="300" style="--target-height: 300px; background-color: #007F5F;"></div>
+						<p class="text-center poppins text-hitam fs-6">Nevin Rin</p>
+					</div>
+					<div class="box-satu">
+						<div class="grafik-batang grafik-batang3" data-height="120" style="--target-height: 120px; background-color: #FFD93D;"></div>
+						<p class="text-center poppins text-hitam fs-6">Nevin Rin</p>
+					</div>
+					<div class="box-satu">
+						<div class="grafik-batang grafik-batang4" data-height="200" style="--target-height: 200px; background-color: #FF914D;"></div>
+						<p class="text-center poppins text-hitam fs-6">Nevin Rin</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-lg-4 mt-4 mt-lg-0 ">
+				<div class="rounded-4 bg-putih p-1 p-lg-4   d-flex justify-content-center flex-column h-100">
+					<div class="pie-chart m-auto">
 
-                <div
-                    class="d-flex justify-content-around bg-chart gap-lg-4 gap-3 p-1 px-md-4 py-4 rounded-4 bg-putih h-100">
-                    <canvas id="myChart" style="width: 100%;"></canvas>
-                    <script>
-                        var xValues = <?php echo json_encode($pengguna_id); ?>;
-                        var yValues = <?php echo json_encode($total_suara); ?>;
-                        var barColors = ["red", "green", "blue", "orange", "brown"];
+					</div>
+					<div class="persen  mt-2 text-black ">
+						<div class="row">
+							<div class="col d-flex text-center text-align-center  flex-column ">
+								<p class="poppins-bold fs-5">40%</p>
+								<p class="poppins">Nevin rin</p>
+							</div>
+							<div class="col d-flex text-center flex-column ">
+								<p class="poppins-bold fs-5">40%</p>
+								<p class="poppins">Nevin rin</p>
+							</div>
 
-                        new Chart("myChart", {
-                            type: "bar",
-                            data: {
-                                labels: xValues,
-                                datasets: [{
-                                    backgroundColor: barColors,
-                                    data: yValues
-                                }]
-                            },
-                            options: {
-                                legend: {
-                                    display: false
-                                },
-                                title: { 
-                                    display: true,
-                                    text: "TOTAL SUARA"
-                                },
-                                 scales: {
-                                    yAxes: [{
-                                        ticks: {
-                                            beginAtZero: true 
-                                        }
-                                    }]
-                                }
-                            }
-                        });
-                    </script>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div
-                    class="d-flex justify-content-around bg-chart gap-lg-4 gap-3 p-1 px-md-4 py-4 rounded-4 bg-putih h-100">
-                    <canvas id="myChart1" style="width: 100%; height: 100%;"></canvas>
-                    <script>
-                        var xValues = <?php echo json_encode($pengguna_id); ?>;
-                        var yValues = <?php echo json_encode($total_suara); ?>;
-                        var barColors = ["red", "green", "blue", "orange", "brown"];
+						</div>
+						<div class="row">
+							<div class="col text-center flex-column ">
+								<p class="poppins-bold fs-5">40%</p>
+								<p class="poppins">Nevin rin</p>
+							</div>
+							<div class="col d-flex text-center flex-column ">
+								<p class="poppins-bold fs-5">40%</p>
+								<p class="poppins">Nevin rin</p>
+							</div>
 
-                        new Chart("myChart1", {
-                            type: "doughnut",
-                            data: {
-                                labels: xValues,
-                                datasets: [{
-                                    backgroundColor: barColors,
-                                    data: yValues
-                                }]
-                            },
-                            options: {
-                                legend: {
-                                    display: false
-                                },
-                                title: {
-                                    display: true,
-                                    text: "TOTAL SUARA"
-                                }
-                            }
-                        });
-                    </script>
-                </div>
-            </div>
-        </div>
-    </div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<!-- Modal -->
 	<div class="container">
 		<!-- Modal Profil Kandidat -->
@@ -477,7 +413,7 @@ $total_suara = array_column($data, 'total_suara');
 								<h5 class="text-center mt-0 mb-3">Apakah Anda ingin keluar dari website <b>Suara
 										Warga</b>?</h5>
 								<div class="d-grid">
-									<button type="button" onclick="window.location.href='../login.php'" class="btn-hitam border-0">YA</button>
+									<button type="button" onclick="window.location.href='../logout.php'" class="btn-hitam border-0">YA</button>
 								</div>
 							</div>
 						</div>
