@@ -56,7 +56,7 @@ try {
     <div class="container mb-5">
         <nav class="navbar navbar-expand-lg mt-2 mb-5">
             <div class="container d-flex justify-content-center flex-row">
-                <a class="col-lg-6 col-8" href="#"><img src="../assets/img/logo1.png" width="40%" alt=""></a>
+                <a class="col-lg-6 col-8" href="index.php"><img src="../assets/img/logo1.png" width="40%" alt=""></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
