@@ -54,7 +54,7 @@ JOIN periode pr ON k.id_periode = pr.id_periode;");
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Panitia</title>
+	<title>Kandidat</title>
 	<link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="../style.css">
 	<link rel="stylesheet" href="../fontawesome/css/all.min.css">
