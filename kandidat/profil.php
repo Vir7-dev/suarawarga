@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
         if (!in_array($foto_ext, $allowed_ext)) {
-            die("Ekstensi file tidak diperbolehkan");
+            die("Ekstensi file tidak diperbolehkan");   
         }
 
         // nama file baru
