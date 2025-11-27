@@ -1,10 +1,16 @@
 <?php
 session_start();
-echo $_SESSION['user_role'];
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] != 'panitia') {
-    header("Location: ../login.php");
-    exit;
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
+    exit();
 }
+
+if ($_SESSION['user_role'] !== 'panitia') {
+    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
+    exit();
+}
+echo "Roless Anda: " . $_SESSION['user_role'];
 
 require_once '../koneksi.php';
 try {
