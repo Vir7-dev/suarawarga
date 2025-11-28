@@ -330,7 +330,7 @@ try {
                         </div>
                         <div class="container-fluid">
                             <div class="row">
-                                <h5 class="text-center mt-0 mb-3">Apakah Anda yakin ingin. <b>Menghapus</b> Periode?</h5>
+                                <h5 class="text-center mt-0 mb-3">Apakah Anda yakin ingin <b>Menghapus</b> Periode?</h5>
                             </div>
                             <div class="d-grid">
                                 <a href="#" id="confirm-delete-btn" class="btn-hitam border-0 text-center text-decoration-none">YA</a>

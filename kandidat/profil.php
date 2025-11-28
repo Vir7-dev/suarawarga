@@ -31,7 +31,7 @@ try {
         'user_id' => $_SESSION['user_id']
     ]);
 
-    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC); 
 } catch (PDOException $e) {
     // Tangani error pengambilan data
     $error_fetch = "Gagal mengambil data periode.";
@@ -65,7 +65,7 @@ try {
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav rounded-3 text-end my-4 p-4 gap-4 button-nav ms-auto mb-2 gap-2">
                         <li class="nav-item">
-                            <a class="btn-hitam" href="index.php">Beranda</a>
+                            <a class="btn-hitam" href="index.php">BERANDA</a>
                         </li>
                         <li class="nav-item">
                             <a class="btn-merah" data-bs-toggle="modal"

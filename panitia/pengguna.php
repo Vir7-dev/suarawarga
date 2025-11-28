@@ -101,7 +101,7 @@ require_once '../koneksi.php';
                             <th>PEKERJAAN</th>
                             <th>STATUS PEMILIHAN</th>
                             <th>ROLE</th>
-                            <th style="width: 9%;">AKSI</th>
+                            <th style="width: 14%;">AKSI</th>
                         </tr>
                         <tbody id="t-body">
                             <?php
@@ -264,8 +264,8 @@ require_once '../koneksi.php';
                                 <label for="" class="col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
                                 <select name="jenis_kelamin" class="form-control input-underline" required>
                                     <option value="">Pilih Jenis Kelamin</option>
-                                    <option value="Laki-laki">Laki-laki</option>
-                                    <option value="Perempuan">Perempuan</option>
+                                    <option value="L">Laki-laki</option>
+                                    <option value="P">Perempuan</option>
                                 </select>
                             </div>
                             <div class="mb-3">
@@ -335,8 +335,8 @@ require_once '../koneksi.php';
                                 <label class="col-form-label">Jenis Kelamin <span class="text-danger">*</span></label>
                                 <select name="jenis_kelamin" class="form-control input-underline" id="edit-jenis-kelamin" required>
                                     <option value="">Pilih Jenis Kelamin</option>
-                                    <option value="Laki-laki">Laki-laki</option>
-                                    <option value="Perempuan">Perempuan</option>
+                                    <option value="L">Laki-laki</option>
+                                    <option value="P">Perempuan</option>
                                 </select>
                             </div>
                             <div class="mb-3">

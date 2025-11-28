@@ -10,7 +10,7 @@ if ($_SESSION['user_role'] !== 'panitia') {
     header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
     exit();
 }
-echo "Roless Anda: " . $_SESSION['user_role'];
+
 
 require_once '../koneksi.php';
 try {
