@@ -1,3 +1,62 @@
+<<<<<<< Updated upstream
+=======
+<?php
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
+    exit();
+}
+
+if ($_SESSION['user_role'] !== 'panitia') {
+    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
+    exit();
+}
+
+
+require_once '../koneksi.php';
+try {
+    // LIST KANDIDAT
+    $stmt = $pdo->query("SELECT
+        k.visi,
+        k.misi,
+        k.foto_profil,
+        k.id_kandidat,
+        p.nama,
+        p.pendidikan,
+        p.pekerjaan,
+        p.alamat,
+        pr.nama_periode
+    FROM kandidat k
+    JOIN pengguna p ON k.pengguna_id = p.id
+    JOIN periode pr ON k.id_periode = pr.id_periode;");
+    
+    $periode_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // JUMLAH SUARA
+    $stmt1 = $stmt2 = $pdo->query("SELECT 
+        k.id_kandidat,
+        k.pengguna_id,
+        p.nama,
+        COUNT(s.id_suara) AS total_suara
+    FROM kandidat k
+    LEFT JOIN suara s ON k.id_kandidat = s.kandidat_id 
+    LEFT JOIN pengguna p ON p.id = k.pengguna_id
+    GROUP BY k.id_kandidat, k.pengguna_id, p.nama");
+
+    $suara = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+
+    $kandidat_ids = array_column($suara, 'id_kandidat');
+    $pengguna_id  = array_column($suara, 'nama');
+    $total_suara  = array_column($suara, 'total_suara');
+
+} catch (PDOException $e) {
+    $error_fetch = "Gagal mengambil data periode.";
+    $periode_list = [];
+}
+?>
+
+>>>>>>> Stashed changes
 <!DOCTYPE html>
 <html lang="en">
 
