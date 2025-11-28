@@ -26,37 +26,41 @@
     background-size: 100%;
 }
 
-.btn-hijau {
+.btn-success {
     background-color: #058055;
-    padding: 10px;
-    padding-inline: 20px;
-    border-radius: 10px;
-    border: 0px;
-    text-decoration: none;
     color: #FFFEEC;
-    font-weight: 700;
-    text-align: center;
+    border-radius: 10px;
+}
+.btn-hisuccessjau:hover {
+    background-color: #046945;
+    color: #FFFEEC;
 }
 
-.btn-hitam {
+.btn-putih {
+    padding-left: 20px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.btn-putih:hover{
+    padding-left: 20px;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
+.btn-dark {
     background-color: #1E1E1E;
-    padding: 10px;
-    padding-inline: 20px;
-    border: 0px;
-    border-radius: 10px;
     text-decoration: none;
     color: #FFFEEC;
     font-weight: 700;
     text-align: center;
 }
 
-.btn-merah {
+.btn-danger {
     background-color: #FF0000;
-    padding: 10px;
-    padding-inline: 20px;
-    border-radius: 10px;
     text-decoration: none;
-    border: 0px;
     color: #FFFEEC;
     font-weight: 700;
     text-align: center;
@@ -74,14 +78,6 @@
 
 .btn-merah:hover {
     background-color: rgb(206, 0, 0);
-}
-
-.btn-hijau:hover {
-    background-color: #088d5e;
-}
-
-.btn-hitam:hover {
-    background-color: #3e3434;
 }
 
 .text-hitam {
@@ -235,6 +231,10 @@
     outline: none;
 }
 
+.form-control{
+    border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+}
+
 .form-control-hitam {
     background-color: #1E1E1E;
     color: #FFFEEC;
@@ -244,31 +244,6 @@
     background-color: #1E1E1E;
     color: #FFFEEC;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-}
-
-.form-control-abu {
-    background-color: #D9D9D9;
-    color: #1E1E1E;
-}
-
-.form-control-abu:focus {
-    background-color: #D9D9D9;
-    color: #1E1E1E;
-    border-color: #1E1E1E;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.0);
-}
-
-.form-control-abu::file-selector-button {
-    background-color: #d9d9d9;
-    border: none;
-    padding: 0.4rem 1rem;
-    border-right: 1px solid #bfbfbf;
-    transition: 0.3s;
-}
-
-.form-control-abu::file-selector-button:hover {
-    background-color: #c9c9c9;
-    cursor: pointer;
 }
 
 .form-control-search {
@@ -302,10 +277,6 @@
 .search-wrapper .form-control {
     padding-left: 40px;
     /* supaya teks tidak menimpa ikon */
-}
-
-th {
-    text-align: center;
 }
 
 td,
@@ -361,16 +332,4 @@ tr:hover {
 .text-danger {
   font-size: 0.9em;
   margin-left: 2px;
-}
-
-.input-underline {
-  border: none;
-  border-bottom: 3px solid #007F5F;
-  border-radius: 0;
-  box-shadow: none;
-}
-.input-underline:focus {
-  border-bottom-color: #0056b3;
-  outline: none;
-  box-shadow: none;
 }

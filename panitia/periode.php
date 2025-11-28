@@ -1,97 +1,82 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php?error=" . urlencode("Sesi berakhir atau Anda belum login."));
-    exit();
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] != 'panitia') {
+    header("Location: ../login.php");
+    exit;
 }
 
-if ($_SESSION['user_role'] !== 'panitia') {
-    header("Location: ../login.php?error=" . urlencode("Akses ditolak. Anda tidak memiliki izin Panitia."));
-    exit();
-}
 require_once '../koneksi.php';
 
 // ===========================
-// CREATE (TAMBAH)
+// INSERT (TAMBAH) - POST
 // ===========================
 if (isset($_POST['tambah'])) {
 
-    // 1. Ambil data (Tanda [] dihilangkan)
-    $nama    = $_POST['nama_periode'];
-    $mulai   = $_POST['mulai'];
-    $selesai = $_POST['selesai'];
-    $status  = $_POST['status_periode']; // Pastikan nama form input benar
-
-    // 2. Gunakan Prepared Statement dengan placeholder (?)
-    $query = "INSERT INTO periode (nama_periode, mulai, selesai, status_periode)
-              VALUES (?, ?, ?, ?)";
+    $nama_periode   = $_POST['nama_periode'];
+    $mulai          = $_POST['mulai'];
+    $selesai        = $_POST['selesai'];
+    $status_periode = $_POST['status_periode'] ?? 'tidak_aktif';
 
     try {
+        $query = "INSERT INTO periode (nama_periode, mulai, selesai, status_periode)
+                  VALUES (?, ?, ?, ?)";
         $stmt = $pdo->prepare($query);
-        // 3. Eksekusi query (Data di-bind di sini, AMAN!)
-        $stmt->execute([$nama, $mulai, $selesai, $status]);
+        $stmt->execute([$nama_periode, $mulai, $selesai, $status_periode]);
 
-        header("Location: periode.php?msg=added"); // Redirect ke file PHP
+        header("Location: periode.php?msg=added");
         exit;
     } catch (PDOException $e) {
-        // Handle error, misalnya jika nama periode duplikat
-        header("Location: periode.php?err=" . urlencode("Gagal tambah data."));
+        header("Location: periode.php?err=" . urlencode("Gagal menambah periode."));
         exit;
     }
 }
 
 // ===========================
-// UPDATE (EDIT) - AMAN DENGAN PDO
+// UPDATE (EDIT) - POST
 // ===========================
 if (isset($_POST['edit'])) {
+    $id_periode     = $_POST['id_periode'] ?? null;
+    $nama_periode   = trim($_POST['nama_periode'] ?? '');
+    $mulai          = trim($_POST['mulai'] ?? '');
+    $selesai        = trim($_POST['selesai'] ?? '');
+    $status_periode = trim($_POST['status_periode'] ?? 'tidak_aktif');
 
-    // 1. Ambil data
-    $id      = $_POST['id_periode']; // Pastikan ini ada di form
-    $nama    = $_POST['nama_periode'];
-    $mulai   = $_POST['mulai'];
-    $selesai = $_POST['selesai'];
-    $status  = $_POST['status_periode'];
-
-    // 2. Gunakan Prepared Statement
-    $query = "UPDATE periode SET 
-                nama_periode=?,
-                mulai=?,
-                selesai=?,
-                status_periode=?
-              WHERE id_periode=?";
+    if (!$id_periode || $nama_periode === '') {
+        header("Location: periode.php?err=" . urlencode("ID dan Nama Periode wajib diisi."));
+        exit;
+    }
 
     try {
+        $query = "UPDATE periode SET
+                    nama_periode = ?, mulai = ?, selesai = ?, status_periode = ?
+                  WHERE id_periode = ?";
         $stmt = $pdo->prepare($query);
-        // 3. Eksekusi query (urutan harus sesuai placeholder)
-        $stmt->execute([$nama, $mulai, $selesai, $status, $id]);
+        $stmt->execute([$nama_periode, $mulai, $selesai, $status_periode, $id_periode]);
 
         header("Location: periode.php?msg=updated");
         exit;
     } catch (PDOException $e) {
-        header("Location: periode.php?err=" . urlencode("Gagal edit data."));
+        header("Location: periode.php?err=" . urlencode("Gagal mengubah periode."));
         exit;
     }
 }
 
 // ===========================
-// DELETE - AMAN DENGAN PDO
+// DELETE (HAPUS) - GET
 // ===========================
 if (isset($_GET['hapus'])) {
-
     $id = $_GET['hapus'];
 
-    // 1. Gunakan Prepared Statement untuk mencegah SQL Injection dari URL
-    $query = "DELETE FROM periode WHERE id_periode = ?";
-
     try {
+        $query = "DELETE FROM periode WHERE id_periode = ?";
         $stmt = $pdo->prepare($query);
         $stmt->execute([$id]);
 
         header("Location: periode.php?msg=deleted");
         exit;
     } catch (PDOException $e) {
-        header("Location: periode.php?err=" . urlencode("Gagal hapus data."));
+        header("Location: periode.php?err=" . urlencode("Gagal menghapus periode."));
         exit;
     }
 }
@@ -100,24 +85,21 @@ if (isset($_GET['hapus'])) {
 // FETCH DATA UNTUK TABEL
 // ===========================
 try {
-    // Gunakan $pdo->query() jika tidak ada input user (SELECT murni)
-    $stmt = $pdo->query("SELECT * FROM periode ORDER BY id_periode DESC");
-    // Ambil semua hasil dalam bentuk array asosiatif
+    $stmt = $pdo->query("SELECT id_periode, nama_periode, mulai, selesai, status_periode 
+                         FROM periode 
+                         ORDER BY id_periode DESC");
     $periode_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Tangani error pengambilan data
-    $error_fetch = "Gagal mengambil data periode.";
     $periode_list = [];
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Periode</title>
+    <title>Data Periode</title>
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="../fontawesome/css/all.min.css">
@@ -126,201 +108,221 @@ try {
 <body class="bg">
     <div class="container mb-5">
         <nav class="navbar navbar-expand-lg mt-2 mb-5">
-            <div class="container d-flex justify-content-center flex-row">
-                <a class="col-8 col-lg-5" href="index.php"><img src="../assets/img/logo1.png" width="40%" alt=""></a>
+            <div class="container d-flex align-items-center">
+
+                <!-- Logo -->
+                <a class="navbar-brand" href="#">
+                    <img src="../assets/img/logo1.png" alt="Logo" style="width:170px;">
+                </a>
+
+                <!-- Toggle button -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                <!-- Menu -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav rounded-3 text-end my-4 p-4 gap-4 button-nav ms-auto mb-2 gap-2">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
                         <li class="nav-item">
-                            <a href="index.php" class="btn-hitam">BERANDA</a>
+                            <a href="index.php" class="btn btn-dark"><i class="fa-solid fa-house-user me-2"></i>BERANDA</a>
                         </li>
                         <li class="nav-item">
-                            <a href="pengguna.php" class="btn-hitam">DATA PENGGUNA</a>
+                            <a href="pengguna.php" class="btn btn-dark"><i class="fa-solid fa-users me-2"></i>PENGGUNA</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn-merah" aria-current="page" data-bs-toggle="modal" data-bs-target="#modal-keluar" href="#">KELUAR</a>
+                            <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal-keluar" href="#"><i class="fa-solid fa-right-from-bracket me-2"></i>KELUAR</a>
                         </li>
                     </ul>
                 </div>
+
             </div>
         </nav>
+
     </div>
 
     <div class="container mb-3">
+        <!-- Alert Messages -->
+        <?php if (isset($_GET['msg'])): ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <?php 
+                    if ($_GET['msg'] == 'added') echo 'Data periode berhasil ditambahkan!';
+                    if ($_GET['msg'] == 'updated') echo 'Data periode berhasil diubah!';
+                    if ($_GET['msg'] == 'deleted') echo 'Data periode berhasil dihapus!';
+                ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_GET['err'])): ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <?= htmlspecialchars($_GET['err']) ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
         <div class="row">
-            <div class="col-md-8 mb-md-0 mb-3 col-12">
-                <div class="input-group ">
-                    <form class="search-wrapper" role="search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input class="form-control rounded-pill form-control-search" type="search"
-                            placeholder="Cari Data Periode.." aria-label="Search">
-                    </form>
-                </div>
+            <div class="col-8">
+                <form class="d-flex" role="search" method="GET" action="periode.php">
+                    <input name="q" class="form-control rounded-0 rounded-start-4 border-2 shadow" type="search" placeholder="Cari Nama Periode" aria-label="Search" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" />
+                    <button class="btn btn-putih rounded-0 rounded-end-4 border-2" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
             </div>
-            <div class="col-12 col-md-4 d-flex gap-md-4   justify-content-md-end justify-content-between">
-                <button type="button" class="btn-hijau  col-12 col-md-8 " data-bs-toggle="modal" data-bs-target="#modal-periode">TAMBAH
-                    PERIODE</button>
-                <div class="modal fade" id="modal-periode" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                        <div class="modal-content rounded-4 bg-putih">
-                            <div class="modal-body">
-                                <form method="POST" action="periode.php">
-                                    <div class="mb-3">
-                                        <label for="nama_periode_input" class="col-form-label">Nama Periode</label>
-                                        <input type="text" class="form-control form-control-abu" name="nama_periode" id="nama_periode_input" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="mulai_input" class="col-form-label">Mulai</label>
-                                        <input type="date" class="form-control form-control-abu" name="mulai" id="mulai_input" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="selesai_input" class="col-form-label">Berakhir</label>
-                                        <input type="date" class="form-control form-control-abu" name="selesai" id="selesai_input" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="status_input" class="col-form-label">Status</label>
-                                        <select class="form-control form-control-abu" name="status_periode" id="status_input" required>
-                                            <option value="aktif">Aktif</option>
-                                            <option value="tidak_aktif">Tidak Aktif</option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" name="tambah" class="btn-hijau">Simpan</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- <button type="button" class="btn-hijau col-md-5 " data-bs-toggle="modal"
-                    data-bs-target="#modal-excel">IMPORT Periode</button> -->
+            <div class="col-3 offset-1 text-end">
+                <button type="button" class="btn btn-success poppins-bold shadow" data-bs-toggle="modal" data-bs-target="#modal-periode"><i class="fa-solid fa-circle-plus me-2"></i>TAMBAH</button>
             </div>
+        </div>
+        <div class="row">
             <div class="col-12 mt-3">
                 <div class="table-responsive col-12 rounded-4 shadow">
-                    <table class=" poppins-medium bg-putih rounded-4 w-100">
-                        <tr class="bg-hijau">
-                            <th>NAMA PERIODE</th>
-                            <th>MULAI</th>
-                            <th>BERAKHIR</th>
-                            <th>STATUS</th>
-                            <th>AKSI</th>
-                        </tr>
-
-                        <?php if (!empty($periode_list)): ?>
-                            <?php foreach ($periode_list as $data): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($data['nama_periode']) ?></td>
-                                    <td><?= htmlspecialchars($data['mulai']) ?></td>
-                                    <td><?= htmlspecialchars($data['selesai']) ?></td>
-                                    <td><?= htmlspecialchars($data['status_periode']) ?></td>
-
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-warning me-2"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#modal-ubah"
-                                            data-id="<?= $data['id_periode'] ?>"
-                                            data-nama="<?= htmlspecialchars($data['nama_periode']) ?>"
-                                            data-mulai="<?= $data['mulai'] ?>"
-                                            data-selesai="<?= $data['selesai'] ?>"
-                                            data-status="<?= $data['status_periode'] ?>">
-                                            <i class="fa-solid fa-edit"></i> Edit
-                                        </button>
-
-                                        <button type="button" class="btn btn-sm btn-danger"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#modal-hapus"
-                                            data-id-hapus="<?= $data['id_periode'] ?>">
-                                            <i class="fa-solid fa-trash"></i> Hapus
-                                        </button>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="5" class="text-center">Belum ada data periode yang terdaftar.</td>
+                    <table class="poppins-medium bg-putih rounded-4 w-100">
+                        <thead>
+                            <tr class="bg-hijau">
+                                <th>NAMA PERIODE</th>
+                                <th>MULAI</th>
+                                <th>BERAKHIR</th>
+                                <th>STATUS</th>
+                                <th style="width: 10%;">AKSI</th>
                             </tr>
-                        <?php endif; ?>
+                        </thead>
+                        <tbody id="t-body">
+                            <?php if (!empty($periode_list)): ?>
+                                <?php foreach ($periode_list as $data): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($data['nama_periode']) ?></td>
+                                        <td><?= htmlspecialchars($data['mulai']) ?></td>
+                                        <td><?= htmlspecialchars($data['selesai']) ?></td>
+                                        <td>
+                                            <?php if ($data['status_periode'] == 'aktif'): ?>
+                                                <h6><span class="badge bg-success">Aktif</span></h6>
+                                            <?php else: ?>
+                                                <h6><span class="badge bg-secondary">Tidak Aktif</span></h6>
+                                            <?php endif; ?>
+                                        </td>
+
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-warning me-2"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modal-ubah"
+                                                data-id="<?= htmlspecialchars($data['id_periode']) ?>"
+                                                data-nama="<?= htmlspecialchars($data['nama_periode']) ?>"
+                                                data-mulai="<?= htmlspecialchars($data['mulai']) ?>"
+                                                data-selesai="<?= htmlspecialchars($data['selesai']) ?>"
+                                                data-status="<?= htmlspecialchars($data['status_periode']) ?>">
+                                                <i class="fa-solid fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modal-hapus"
+                                                data-id-hapus="<?= htmlspecialchars($data['id_periode']) ?>">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="5" class="text-center">Belum ada data periode.</td>
+                                </tr>
+                            <?php endif ?>
+                        </tbody>
                     </table>
                 </div>
+
+                <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+                    <!-- placeholder pagination jika diperlukan nantinya -->
+                </div>
+
             </div>
         </div>
     </div>
-    <!-- Modal -->
+
+    <!-- Modal TAMBAH -->
     <div class="container">
         <div class="modal fade" id="modal-periode" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content rounded-4 bg-putih">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5">Formulir Tambah Periode</h1>
+                        <h1 class="modal-title fs-5">Formulir Periode - Tambah</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form method="POST" action="periode.php">
-                            <div class="mb-3">
-                                <label for="nama_periode_input" class="col-form-label">Nama Periode</label>
-                                <input type="text" class="form-control form-control-abu" name="nama_periode" id="nama_periode_input" required>
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label class="col-form-label">Nama Periode <span class="text-danger">*</span></label>
+                                    <input type="text" name="nama_periode" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="col-form-label">Mulai <span class="text-danger">*</span></label>
+                                    <input type="date" name="mulai" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="col-form-label">Berakhir <span class="text-danger">*</span></label>
+                                    <input type="date" name="selesai" class="form-control" required>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="col-form-label">Status</label>
+                                    <select name="status_periode" class="form-control">
+                                        <option value="aktif">Aktif</option>
+                                        <option value="tidak_aktif" selected>Tidak Aktif</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="mulai_input" class="col-form-label">Mulai</label>
-                                <input type="date" class="form-control form-control-abu" name="mulai" id="mulai_input" required>
+
+                            <div class="text-end">
+                                <button type="submit" name="tambah" class="btn btn-success">Simpan</button>
                             </div>
-                            <div class="mb-3">
-                                <label for="selesai_input" class="col-form-label">Berakhir</label>
-                                <input type="date" class="form-control form-control-abu" name="selesai" id="selesai_input" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="status_input_add" class="col-form-label">Status</label>
-                                <select class="form-control form-control-abu" name="status_periode" id="status_input_add" required>
-                                    <option value="aktif">Aktif</option>
-                                    <option value="tidak_aktif">Tidak Aktif</option>
-                                </select>
-                            </div>
-                            <button type="submit" name="tambah" class="btn-hijau">Simpan</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Modal UBAH -->
         <div class="modal fade" id="modal-ubah" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content rounded-4 bg-putih">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5">Formulir Ubah Periode</h1>
+                        <h1 class="modal-title fs-5">Formulir Periode - Ubah</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form method="POST" action="periode.php">
                             <input type="hidden" name="id_periode" id="ubah-id">
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <label class="col-form-label">Nama Periode <span class="text-danger">*</span></label>
+                                    <input type="text" name="nama_periode" id="ubah-nama" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="col-form-label">Mulai <span class="text-danger">*</span></label>
+                                    <input type="date" name="mulai" id="ubah-mulai" class="form-control" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="col-form-label">Berakhir <span class="text-danger">*</span></label>
+                                    <input type="date" name="selesai" id="ubah-selesai" class="form-control" required>
+                                </div>
+                                <div class="col-12 mb-3">
+                                    <label class="col-form-label">Status</label>
+                                    <select name="status_periode" id="ubah-status" class="form-control">
+                                        <option value="aktif">Aktif</option>
+                                        <option value="tidak_aktif">Tidak Aktif</option>
+                                    </select>
+                                </div>
+                            </div>
 
-                            <div class="mb-3">
-                                <label for="ubah-nama" class="col-form-label">Nama Periode</label>
-                                <input type="text" class="form-control form-control-abu" name="nama_periode" id="ubah-nama" required>
+                            <div class="text-end">
+                                <button type="submit" name="edit" class="btn btn-success">Ubah Data</button>
                             </div>
-                            <div class="mb-3">
-                                <label for="ubah-mulai" class="col-form-label">Mulai</label>
-                                <input type="date" class="form-control form-control-abu" name="mulai" id="ubah-mulai" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="ubah-selesai" class="col-form-label">Berakhir</label>
-                                <input type="date" class="form-control form-control-abu" name="selesai" id="ubah-selesai" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="ubah-status" class="col-form-label">Status</label>
-                                <select class="form-control form-control-abu" name="status_periode" id="ubah-status" required>
-                                    <option value="aktif">Aktif</option>
-                                    <option value="tidak_aktif">Tidak Aktif</option>
-                                </select>
-                            </div>
-                            <button type="submit" name="edit" class="btn-hijau">Ubah Data</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- Modal HAPUS -->
         <div class="modal fade" id="modal-hapus" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content bg-putih rounded-4">
@@ -333,7 +335,7 @@ try {
                                 <h5 class="text-center mt-0 mb-3">Apakah Anda yakin ingin <b>Menghapus</b> Periode?</h5>
                             </div>
                             <div class="d-grid">
-                                <a href="#" id="confirm-delete-btn" class="btn-hitam border-0 text-center text-decoration-none">YA</a>
+                                <a href="#" id="confirm-delete-btn" class="btn btn-success border-0 text-decoration-none text-center">YA</a>
                             </div>
                         </div>
                     </div>
@@ -341,6 +343,7 @@ try {
             </div>
         </div>
 
+        <!-- Modal KELUAR -->
         <div class="modal fade" id="modal-keluar" tabindex="-1" aria-labelledby="keluar" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-sm">
                 <div class="modal-content bg-putih">
@@ -350,10 +353,11 @@ try {
                         </div>
                         <div class="container-fluid">
                             <div class="row">
-                                <h5 class="text-center mt-0 mb-3">apakah anda ingin keluar dari website suara warga?</h5>
-                            </div>
-                            <div class="d-grid">
-                                <a href="../logout.php" class="btn-hitam border-0 text-center text-decoration-none">YA</a>
+                                <h5 class="text-center mt-0 mb-3">Apakah Anda ingin keluar dari website <b>Suara
+                                        Warga</b>?</h5>
+                                <div class="d-grid">
+                                    <button type="button" onclick="window.location.href='../login.php'" class="btn btn-dark border-0">YA</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -365,11 +369,10 @@ try {
     <script src="../bootstrap/js/bootstrap.bundle.js"></script>
     <script>
         // ------------------------------------
-        // LOGIC UNTUK MODAL EDIT (UBAH)
+        // POPULATE MODAL UBAH
         // ------------------------------------
         const modalUbah = document.getElementById('modal-ubah');
         modalUbah.addEventListener('show.bs.modal', event => {
-            // Button yang memicu modal
             const button = event.relatedTarget;
 
             // Ambil data dari data-attributes
@@ -379,43 +382,24 @@ try {
             const selesai = button.getAttribute('data-selesai');
             const status = button.getAttribute('data-status');
 
-            // Isi form modal (Asumsi id input di modal adalah: input-id, input-nama, dst.)
-            // Kamu harus memastikan form di modal-ubah memiliki input dengan ID yang sesuai.
-
-            // 1. Set action form untuk EDIT (POST)
-            const form = modalUbah.querySelector('form');
-            form.action = 'periode.php'; // Aksi form diarahkan ke file ini sendiri
-
-            // 2. Set nilai input di dalam form
-            modalUbah.querySelector('#ubah-id').value = id; // Tambahkan hidden input untuk ID
-            modalUbah.querySelector('#ubah-nama').value = nama;
-            modalUbah.querySelector('#ubah-mulai').value = mulai;
-            modalUbah.querySelector('#ubah-selesai').value = selesai;
-            // ... dan seterusnya untuk input status
-
-            // Ganti nama button submit dari Tambah ke Edit/Ubah
-            form.querySelector('button[type="submit"]').name = 'edit';
-            form.querySelector('button[type="submit"]').textContent = 'UBAH';
+            // Isi form modal
+            modalUbah.querySelector('#ubah-id').value = id || '';
+            modalUbah.querySelector('#ubah-nama').value = nama || '';
+            modalUbah.querySelector('#ubah-mulai').value = mulai || '';
+            modalUbah.querySelector('#ubah-selesai').value = selesai || '';
+            modalUbah.querySelector('#ubah-status').value = status || 'tidak_aktif';
         });
 
-
         // ------------------------------------
-        // LOGIC UNTUK MODAL DELETE (HAPUS)
+        // MODAL HAPUS (SET LINK CONFIRM)
         // ------------------------------------
         const modalHapus = document.getElementById('modal-hapus');
         modalHapus.addEventListener('show.bs.modal', event => {
             const button = event.relatedTarget;
             const idHapus = button.getAttribute('data-id-hapus');
 
-            // Cari tombol YA/Konfirmasi di modal hapus
-            const btnYaHapus = modalHapus.querySelector('.d-grid .btn-hitam');
-
-            // Ubah link tombol YA ke logika delete PHP
-            // Kita gunakan query string GET['hapus'] yang sudah kamu buat di logika PHP
-            btnYaHapus.onclick = function() {
-                window.location.href = 'periode.php?hapus=' + idHapus;
-            };
-            // Perhatikan, jika tombol YA tidak punya class .btn-hitam, sesuaikan selectornya!
+            const btnYaHapus = modalHapus.querySelector('#confirm-delete-btn');
+            btnYaHapus.href = 'periode.php?hapus=' + encodeURIComponent(idHapus);
         });
     </script>
 </body>

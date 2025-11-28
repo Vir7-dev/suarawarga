@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_role']) || $_SESSION['user_role'] !='kandidat') {
     header("Location: ../login.php");
     exit;
 }
@@ -10,7 +10,7 @@ require_once '../koneksi.php';
 try {
     // Gunakan $pdo->query() jika tidak ada input user (SELECT murni)
     $stmt = $pdo->prepare("
-    SELECT 
+    SELECT
         k.visi,
         k.misi,
         k.foto_profil,
@@ -31,7 +31,7 @@ try {
         'user_id' => $_SESSION['user_id']
     ]);
 
-    $data = $stmt->fetch(PDO::FETCH_ASSOC); 
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     // Tangani error pengambilan data
     $error_fetch = "Gagal mengambil data periode.";
@@ -49,30 +49,39 @@ try {
     <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../style.css">
     <link rel="import" href="navbar.php">
+    <link rel="stylesheet" href="../fontawesome/css/all.min.css">
 </head>
 
 <body class="bg">
     <!-- Navbar -->
     <div class="container mb-5">
         <nav class="navbar navbar-expand-lg mt-2 mb-5">
-            <div class="container d-flex justify-content-center flex-row">
-                <a class="col-lg-6 col-8" href="index.php"><img src="../assets/img/logo1.png" width="40%" alt=""></a>
+            <div class="container d-flex align-items-center">
+
+                <!-- Logo -->
+                <a class="navbar-brand" href="#">
+                    <img src="../assets/img/logo1.png" alt="Logo" style="width:170px;">
+                </a>
+
+                <!-- Toggle button -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                <!-- Menu -->
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav rounded-3 text-end my-4 p-4 gap-4 button-nav ms-auto mb-2 gap-2">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 gap-2">
                         <li class="nav-item">
-                            <a class="btn-hitam" href="index.php">BERANDA</a>
+                            <a href="index.php" class="btn btn-dark"><i class="fa-solid fa-house-user me-2"></i>BERANDA</a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn-merah" data-bs-toggle="modal"
-                                data-bs-target="#modal-keluar">KELUAR</a>
+                            <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal-keluar" href="#"><i class="fa-solid fa-right-from-bracket me-2"></i>KELUAR</a>
                         </li>
                     </ul>
                 </div>
+
             </div>
         </nav>
     </div>
@@ -94,7 +103,7 @@ try {
                 <p class="card-title poppins-semibold">Alamat</p>
                 <p class="card-text">Buana Vista Indah 2 Blok A No.48</p><br>
                 <div class="d-grid gap-1">
-                    <a href="#" class="btn-hitam" data-bs-toggle="modal" data-bs-target="#modal-ubah-profil">UBAH PROFIL
+                    <a href="#" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modal-ubah-profil-<?= htmlspecialchars($data['id_kandidat']); ?>">UBAH PROFIL
                         KANDIDAT</a>
                 </div>
             </div>
@@ -129,10 +138,10 @@ try {
                         </div>
                         <div class="container-fluid">
                             <div class="row">
-                                <h5 class="text-center mt-0 mb-3">apakah anda ingin keluar dari website suara warga?
-                                </h5>
+                                <h5 class="text-center mt-0 mb-3">Apakah Anda ingin keluar dari website <b>Suara
+                                        Warga</b>?</h5>
                                 <div class="d-grid">
-                                    <button type="button" onclick="window.location.href='../logout.php'" class="btn-hitam border-0">YA</button>
+                                    <button type="button" onclick="window.location.href='../login.php'" class="btn btn-dark border-0">YA</button>
                                 </div>
                             </div>
                         </div>
@@ -140,7 +149,7 @@ try {
                 </div>
             </div>
         </div>
-        <div class="modal fade" id="modal-ubah-profil" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="modal-ubah-profil-<?= htmlspecialchars($data['id_kandidat']); ?>" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-xl">
                 <div class="modal-content rounded-4 bg-putih">
                     <div class="modal-header">
@@ -166,7 +175,7 @@ try {
                                 <textarea class="form-control " id="misi-text"
                                     style="height: 200px;" name="misi"><?= htmlspecialchars($data['misi']); ?></textarea>
                             </div>
-                            <button type="submit" class="btn-hijau">Simpan</button>
+                            <button type="submit" class="btn btn-success">Simpan</button>
                         </form>
                     </div>
                 </div>
