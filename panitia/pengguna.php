@@ -221,7 +221,6 @@ try {
             </div>
             <div class="col-4 text-end">
                 <button type="button" class="btn btn-success poppins-bold shadow" data-bs-toggle="modal" data-bs-target="#modal-pengguna"><i class="fa-solid fa-circle-plus me-2"></i>TAMBAH</button>
-                <button type="button" class="btn btn-success poppins-bold shadow" data-bs-toggle="modal" data-bs-target="#modal-pengguna"><i class="fa-solid fa-circle-plus me-2"></i>KANDIDAT</button>
                 <button type="button" class="btn btn-success poppins-bold shadow" data-bs-toggle="modal" data-bs-target="#modal-import"><i class="fa-solid fa-upload me-2"></i>IMPORT</button>
             </div>
         </div>
@@ -291,6 +290,108 @@ try {
                                             </button>
                                         </td>
                                     </tr>
+                                    <div class="modal fade" id="modal-kandidat" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                                            <div class="modal-content rounded-4 bg-putih">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5">Formulir Kandiat - Tambah</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="POST" action="pengguna.php">
+                                                        <div class="row">
+                                                            <input type="hidden" name="id" value="<?= htmlspecialchars($data['id']) ?>">
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">NIK <span class="text-danger">*</span></label>
+                                                                <input type="text" name="nik" class="form-control" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                                                                <input type="text" name="nama" class="form-control" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Tempat Lahir</label>
+                                                                <input type="text" name="tempat_lahir" class="form-control">
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Tanggal Lahir</label>
+                                                                <input type="date" name="tanggal_lahir" class="form-control">
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Jenis Kelamin</label>
+                                                                <div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jk_l" value="L" checked>
+                                                                        <label class="form-check-label" for="jk_l">Laki-laki</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jk_p" value="P">
+                                                                        <label class="form-check-label" for="jk_p">Perempuan</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Agama</label>
+                                                                <select name="agama" class="form-control">
+                                                                    <option value="">-- Pilih Agama --</option>
+                                                                    <option value="Islam">Islam</option>
+                                                                    <option value="Kristen">Kristen</option>
+                                                                    <option value="Katolik">Katolik</option>
+                                                                    <option value="Hindu">Hindu</option>
+                                                                    <option value="Buddha">Buddha</option>
+                                                                    <option value="Konghucu">Konghucu</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Pendidikan Terakhir</label>
+                                                                <select name="pendidikan" class="form-control">
+                                                                    <option value="">-- Pilih Pendidikan --</option>
+                                                                    <option value="SD">SD</option>
+                                                                    <option value="SMP">SMP</option>
+                                                                    <option value="SMA/SMK">SMA/SMK</option>
+                                                                    <option value="D3">D3</option>
+                                                                    <option value="S1">S1</option>
+                                                                    <option value="S2">S2</option>
+                                                                    <option value="S3">S3</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Pekerjaan</label>
+                                                                <input type="text" name="pekerjaan" class="form-control">
+                                                            </div>
+                                                            <div class="col-12 mb-3">
+                                                                <label class="col-form-label">Alamat</label>
+                                                                <textarea name="alamat" class="form-control" rows="3"></textarea>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Status Pemilihan</label>
+                                                                <select name="status_pilih" class="form-control">
+                                                                    <option value="belum">Belum Memilih</option>
+                                                                    <option value="sudah">Sudah Memilih</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Role</label>
+                                                                <select name="role" class="form-control">
+                                                                    <option value="warga">Warga</option>
+                                                                    <option value="panitia">Panitia</option>
+                                                                    <option value="kandidat">Kandidat</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="col-form-label">Password <span class="text-danger">*</span> <small class="text-muted">(Default: NIK)</small></label>
+                                                                <input type="text" name="password" class="form-control" value="" placeholder="Otomatis menggunakan NIK">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="text-end">
+                                                            <button type="submit" name="tambah" class="btn btn-success">Simpan</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
@@ -330,29 +431,29 @@ try {
                                     <input type="text" name="nama" class="form-control" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="col-form-label">Tempat Lahir</label>
-                                    <input type="text" name="tempat_lahir" class="form-control">
+                                    <label class="col-form-label">Tempat Lahir<span class="text-danger">*</span></label>
+                                    <input type="text" name="tempat_lahir" class="form-control" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="col-form-label">Tanggal Lahir</label>
-                                    <input type="date" name="tanggal_lahir" class="form-control">
+                                    <label class="col-form-label">Tanggal Lahir<span class="text-danger">*</span></label>
+                                    <input type="date" name="tanggal_lahir" class="form-control" required>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="col-form-label">Jenis Kelamin</label>
+                                    <label class="col-form-label">Jenis Kelamin<span class="text-danger">*</span></label>
                                     <div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="jenis_kelamin" id="jk_l" value="L" checked>
+                                            <input class="form-check-input" type="radio" name="jenis_kelamin" id="jk_l" value="L" checked required>
                                             <label class="form-check-label" for="jk_l">Laki-laki</label>
                                         </div>
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="radio" name="jenis_kelamin" id="jk_p" value="P">
+                                            <input class="form-check-input" type="radio" name="jenis_kelamin" id="jk_p" value="P" required>
                                             <label class="form-check-label" for="jk_p">Perempuan</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="col-form-label">Agama</label>
-                                    <select name="agama" class="form-control">
+                                    <label class="col-form-label">Agama<span class="text-danger">*</span></label>
+                                    <select name="agama" class="form-control" required>
                                         <option value="">-- Pilih Agama --</option>
                                         <option value="Islam">Islam</option>
                                         <option value="Kristen">Kristen</option>
@@ -363,8 +464,8 @@ try {
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="col-form-label">Pendidikan Terakhir</label>
-                                    <select name="pendidikan" class="form-control">
+                                    <label class="col-form-label">Pendidikan Terakhir<span class="text-danger">*</span></label>
+                                    <select name="pendidikan" class="form-control" required>
                                         <option value="">-- Pilih Pendidikan --</option>
                                         <option value="SD">SD</option>
                                         <option value="SMP">SMP</option>
@@ -376,31 +477,31 @@ try {
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="col-form-label">Pekerjaan</label>
-                                    <input type="text" name="pekerjaan" class="form-control">
+                                    <label class="col-form-label">Pekerjaan<span class="text-danger">*</span></label>
+                                    <input type="text" name="pekerjaan" class="form-control" required>
                                 </div>
                                 <div class="col-12 mb-3">
-                                    <label class="col-form-label">Alamat</label>
-                                    <textarea name="alamat" class="form-control" rows="3"></textarea>
+                                    <label class="col-form-label">Alamat<span class="text-danger">*</span></label>
+                                    <textarea name="alamat" class="form-control" rows="3" required></textarea>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="col-form-label">Status Pemilihan</label>
-                                    <select name="status_pilih" class="form-control">
+                                    <label class="col-form-label">Status Pemilihan<span class="text-danger">*</span></label>
+                                    <select name="status_pilih" class="form-control" required>
                                         <option value="belum">Belum Memilih</option>
                                         <option value="sudah">Sudah Memilih</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="col-form-label">Role</label>
-                                    <select name="role" class="form-control">
-                                        <option value="warga">User</option>
+                                    <label class="col-form-label">Role<span class="text-danger">*</span></label>
+                                    <select name="role" class="form-control" required>
+                                        <option value="warga">Warga</option>
                                         <option value="panitia">Panitia</option>
                                         <option value="kandidat">Kandidat</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <label class="col-form-label">Password <span class="text-danger">*</span> <small class="text-muted">(Default: NIK)</small></label>
-                                    <input type="text" name="password" class="form-control" value="" placeholder="Otomatis menggunakan NIK">
+                                    <label class="col-form-label" >Password<span class="text-danger">*</span> <small class="text-muted">(Default: NIK)</small></label>
+                                    <input type="text" name="password" class="form-control" value="" placeholder="Otomatis menggunakan NIK" required>
                                 </div>
                             </div>
 
